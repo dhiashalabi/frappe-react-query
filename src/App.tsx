@@ -7,7 +7,7 @@ function App() {
     return (
         <BrowserRouter>
             <div className="App">
-                <h1>Frappe Query SDK</h1>
+                <h1>Frappe React Query</h1>
                 <nav>
                     <ul>
                         <li>
