@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { useFrappeGetCall } from './lib'
 import './App.css'
 import { Login, Logout } from './components/login'
 import { Users } from './pages/Users'
@@ -38,20 +37,6 @@ function App() {
                 </div>
             </div>
         </BrowserRouter>
-    )
-}
-
-const FetchingComponent = () => {
-    const { data, error } = useFrappeGetCall('ping')
-
-    return (
-        <div className="response-container">
-            {error ? (
-                <div className="error-message">Error: {error.message}</div>
-            ) : (
-                <div className="success-message">{data?.message || 'Waiting for response...'}</div>
-            )}
-        </div>
     )
 }
 

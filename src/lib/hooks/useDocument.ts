@@ -3,6 +3,7 @@ import useSWR, { Key, SWRConfiguration, SWRResponse, preload } from 'swr'
 import { FrappeConfig, FrappeDoc, GetDocListArgs, Filter, FrappeError as Error } from '../types'
 import { FrappeContext } from '../context/FrappeContext'
 import { getRequestURL, getDocListQueryString, encodeQueryData } from '../utils'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 /**
  * Hook to fetch a document from the database
@@ -68,17 +69,24 @@ export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
     doctype: string,
     args?: GetDocListArgs<K>,
     swrKey?: Key,
-    options?: SWRConfiguration,
+    options?: UseQueryOptions<T[], Error>,
 ) => {
     const { url, db } = useContext(FrappeContext) as FrappeConfig
 
-    const swrResult = useSWR<T[], Error>(
-        swrKey === undefined ? `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}` : swrKey,
-        () => db.getDocList<T, K>(doctype, args),
-        options,
-    )
-
-    return swrResult
+    const queryKey =
+        swrKey === undefined
+            ? ['frappe', doctype, args, `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}`]
+            : swrKey
+    const query = useQuery<T[], Error>({
+        queryKey: queryKey as readonly unknown[],
+        queryFn: () => db.getDocList<T, K>(doctype, args),
+        ...options,
+    })
+    return {
+        ...query,
+        isValidating: query.isFetching,
+        mutate: query.refetch,
+    }
 }
 
 /**

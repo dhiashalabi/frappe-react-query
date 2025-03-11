@@ -1,16 +1,16 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import useSWR, { SWRConfiguration } from 'swr'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthCredentials, AuthResponse, FrappeError as Error, FrappeConfig } from '../types'
 import { FrappeContext } from '../context/FrappeContext'
 
 /**
  * Hook to start listening to user state and provides functions to login/logout
  *
- * @param options - [Optional] SWRConfiguration options for fetching current logged in user
+ * @param options - [Optional] React Query configuration options for fetching current logged in user
  * @returns Returns an object with the following properties: currentUser, loading, error, and functions to login, logout and updateCurrentUser
  */
 export const useFrappeAuth = (
-    options?: SWRConfiguration,
+    options?: any, // Keeping the options type flexible for backward compatibility
 ): {
     /** The current logged in user. Will be null/undefined if user is not logged in */
     currentUser: string | null | undefined
@@ -30,8 +30,8 @@ export const useFrappeAuth = (
     /** Function to get the user cookie and */
     getUserCookie: () => void
 } => {
-    const { url, auth, tokenParams } = useContext(FrappeContext) as FrappeConfig
-
+    const { auth, tokenParams } = useContext(FrappeContext) as FrappeConfig
+    const queryClient = useQueryClient()
     const [userID, setUserID] = useState<string | null | undefined>()
 
     const getUserCookie = useCallback(() => {
@@ -57,30 +57,27 @@ export const useFrappeAuth = (
         }
     }, [getUserCookie, tokenParams])
 
+    const queryKey = ['logged-user']
     const {
         data: currentUser,
         error,
         isLoading,
-        isValidating,
-        mutate: updateCurrentUser,
-    } = useSWR<string | null, Error>(
-        () => {
-            if ((tokenParams && tokenParams.useToken) || userID) {
-                return `${url}/api/method/frappe.auth.get_logged_user`
-            } else {
-                return null
+        isFetching: isValidating,
+        refetch: updateCurrentUser,
+    } = useQuery({
+        queryKey,
+        queryFn: () => auth.getLoggedInUser(),
+        enabled: !!(tokenParams?.useToken || userID),
+        retry: false,
+        refetchOnWindowFocus: false,
+        ...options,
+        onError: () => {
+            setUserID(null)
+            if (options?.onError) {
+                options.onError()
             }
         },
-        () => auth.getLoggedInUser(),
-        {
-            onError: () => {
-                setUserID(null)
-            },
-            shouldRetryOnError: false,
-            revalidateOnFocus: false,
-            ...options,
-        },
-    )
+    })
 
     const login = useCallback(
         async (credentials: AuthCredentials) => {
@@ -95,15 +92,15 @@ export const useFrappeAuth = (
     const logout = useCallback(async () => {
         return auth
             .logout()
-            .then(() => updateCurrentUser(null))
+            .then(() => queryClient.setQueryData(queryKey, null))
             .then(() => setUserID(null))
-    }, [auth, updateCurrentUser])
+    }, [auth, queryClient, queryKey])
 
     return {
         isLoading: userID === undefined || isLoading,
-        currentUser,
+        currentUser: currentUser as string | null | undefined,
         isValidating,
-        error,
+        error: error as Error | null | undefined,
         login,
         logout,
         updateCurrentUser,

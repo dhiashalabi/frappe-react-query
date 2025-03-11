@@ -1,6 +1,6 @@
 import { PropsWithChildren, useMemo } from 'react'
 import { FrappeApp } from '@mussnad/frappe-js-client'
-import { SWRConfig, SWRConfiguration } from 'swr'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { FrappeConfig, TokenParams } from '../types'
 import { SocketIO } from '../socket'
 import { FrappeContext } from './FrappeContext'
@@ -22,8 +22,8 @@ type FrappeProviderProps = PropsWithChildren<{
     siteName?: string
     /** Flag to disable socket, if needed. This defaults to true. */
     enableSocket?: boolean
-    /** SWR Configuration options - these will be applied globally unless overridden */
-    swrConfig?: SWRConfiguration
+    /** QueryClient options - these will be applied globally unless overridden */
+    queryClient?: QueryClient
     /** Custom Headers to be passed in each request */
     customHeaders?: object
 }>
@@ -32,12 +32,16 @@ export const FrappeProvider = ({
     url = '',
     tokenParams,
     socketPort,
-    swrConfig,
+    queryClient,
     siteName,
     enableSocket = true,
     children,
     customHeaders,
 }: FrappeProviderProps) => {
+    // Create a default QueryClient if none is provided
+    const defaultQueryClient = useMemo(() => new QueryClient(), [])
+    const client = queryClient || defaultQueryClient
+
     const frappeConfig: FrappeConfig = useMemo(() => {
         //Add your Frappe backend's URL
         const frappe = new FrappeApp(url, tokenParams, undefined, customHeaders)
@@ -58,7 +62,7 @@ export const FrappeProvider = ({
 
     return (
         <FrappeContext.Provider value={frappeConfig}>
-            <SWRConfig value={swrConfig}>{children}</SWRConfig>
+            <QueryClientProvider client={client}>{children}</QueryClientProvider>
         </FrappeContext.Provider>
     )
 }
