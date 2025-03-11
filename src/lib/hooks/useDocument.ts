@@ -40,13 +40,7 @@ export const useFrappeGetDoc = <T = any>(
  * @param options - The SWRConfiguration options for fetching data
  * @returns A function to prefetch the document
  */
-export const useFrappePrefetchDoc = <T = any>(
-    doctype: string,
-    name?: string,
-    swrKey?: Key,
-    // @ts-expect-error - SWRConfiguration is not typed
-    options?: SWRConfiguration,
-) => {
+export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, swrKey?: Key) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
     const key = swrKey === undefined ? getRequestURL(doctype, url, name) : swrKey
     const preloadCall = useCallback(() => {

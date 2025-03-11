@@ -11,7 +11,12 @@ export default tseslint.config(
         files: ['**/*.{ts,tsx}'],
         languageOptions: {
             ecmaVersion: 2020,
-            globals: globals.browser,
+            sourceType: 'module',
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                ...globals.es2020,
+            },
         },
         plugins: {
             'react-hooks': reactHooks,
@@ -20,6 +25,7 @@ export default tseslint.config(
         rules: {
             ...reactHooks.configs.recommended.rules,
             'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+            '@typescript-eslint/no-explicit-any': 'off',
         },
     },
 )

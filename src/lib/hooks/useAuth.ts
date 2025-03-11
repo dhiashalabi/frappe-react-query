@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthCredentials, AuthResponse, FrappeError as Error, FrappeConfig } from '../types'
 import { FrappeContext } from '../context/FrappeContext'
@@ -57,7 +57,8 @@ export const useFrappeAuth = (
         }
     }, [getUserCookie, tokenParams])
 
-    const queryKey = ['logged-user']
+    const queryKey = useMemo(() => ['logged-user'], [])
+
     const {
         data: currentUser,
         error,
