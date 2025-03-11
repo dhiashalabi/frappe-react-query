@@ -14,7 +14,7 @@ import { getRequestURL, getDocListQueryString, encodeQueryData } from '../utils'
  *
  * @typeParam T - The type of the document
  */
-export const useFrappeGetDoc = <T = unknown>(
+export const useFrappeGetDoc = <T = any>(
     doctype: string,
     name?: string,
     swrKey?: Key,
@@ -39,7 +39,7 @@ export const useFrappeGetDoc = <T = unknown>(
  * @param options - The SWRConfiguration options for fetching data
  * @returns A function to prefetch the document
  */
-export const useFrappePrefetchDoc = <T = unknown>(
+export const useFrappePrefetchDoc = <T = any>(
     doctype: string,
     name?: string,
     swrKey?: Key,
@@ -64,7 +64,7 @@ export const useFrappePrefetchDoc = <T = unknown>(
  *
  * @typeParam T - The type definition of the document object
  */
-export const useFrappeGetDocList = <T = unknown, K = FrappeDoc<T>>(
+export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
     doctype: string,
     args?: GetDocListArgs<K>,
     swrKey?: Key,
@@ -88,7 +88,7 @@ export const useFrappeGetDocList = <T = unknown, K = FrappeDoc<T>>(
  * @param swrKey - The SWRKey to use for caching the result - optional
  * @returns A function to prefetch the list of documents
  */
-export const useFrappePrefetchDocList = <T = unknown>(doctype: string, args?: GetDocListArgs<T>, swrKey?: Key) => {
+export const useFrappePrefetchDocList = <T = any>(doctype: string, args?: GetDocListArgs<T>, swrKey?: Key) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
     const key = swrKey === undefined ? `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}` : swrKey
 
@@ -103,7 +103,7 @@ export const useFrappePrefetchDocList = <T = unknown>(doctype: string, args?: Ge
  * Hook to create a document in the database and maintain loading and error states
  * @returns Object with the following properties: loading, error, isCompleted and createDoc and reset functions
  */
-export const useFrappeCreateDoc = <T = unknown>(): {
+export const useFrappeCreateDoc = <T = any>(): {
     /** Function to create a document in the database */
     createDoc: (doctype: string, doc: T) => Promise<FrappeDoc<T>>
     /** Will be true when the API request is pending.  */
@@ -162,7 +162,7 @@ export const useFrappeCreateDoc = <T = unknown>(): {
  * Hook to update a document in the database and maintain loading and error states
  * @returns Object with the following properties: loading, error, isCompleted and updateDoc and reset functions
  */
-export const useFrappeUpdateDoc = <T = unknown>(): {
+export const useFrappeUpdateDoc = <T = any>(): {
     /** Function to update a document in the database */
     updateDoc: (doctype: string, docname: string | null, doc: Partial<T>) => Promise<FrappeDoc<T>>
     /** Will be true when the API request is pending.  */
@@ -320,7 +320,7 @@ export const useFrappeGetDocCount = <T = any>(
  * @param swrKey - The SWRKey to use for caching the result - optional
  * @returns A function to prefetch the number of documents
  */
-export const useFrappePrefetchDocCount = <T = unknown>(
+export const useFrappePrefetchDocCount = <T = any>(
     doctype: string,
     filters?: Filter<T>[],
     cache: boolean = false,

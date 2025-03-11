@@ -3,6 +3,7 @@ import useSWR, { Key, SWRConfiguration, SWRResponse, useSWRConfig, preload } fro
 import { FrappeContext } from '../context/FrappeContext'
 import { FrappeError as Error, FrappeConfig } from '../types'
 import { encodeQueryData } from '../utils'
+import { ApiParams } from '@mussnad/frappe-js-client'
 export { useSWR, useSWRConfig, preload }
 
 /**
@@ -22,9 +23,9 @@ export { useSWR, useSWRConfig, preload }
  * const { data, error, isLoading, mutate } = useFrappeGetCall("ping")
  *
  */
-export const useFrappeGetCall = <T = unknown>(
+export const useFrappeGetCall = <T = any>(
     method: string,
-    params?: Record<string, unknown>,
+    params?: ApiParams,
     swrKey?: Key,
     options?: SWRConfiguration,
     type: 'GET' | 'POST' = 'GET',
@@ -56,9 +57,9 @@ export const useFrappeGetCall = <T = unknown>(
  * @typeParam T - Type of the data returned by the method
  * @returns an object (SWRResponse) with the following properties: data (number), error, isValidating, isLoading, and mutate
  */
-export const useFrappePrefetchCall = <T = unknown>(
+export const useFrappePrefetchCall = <T = any>(
     method: string,
-    params?: Record<string, unknown>,
+    params?: ApiParams,
     swrKey?: Key,
     type: 'GET' | 'POST' = 'GET',
 ) => {
@@ -78,11 +79,11 @@ export const useFrappePrefetchCall = <T = unknown>(
  * @param method - name of the method to call (POST request) (will be dotted path e.g. "frappe.client.set_value")
  * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
  */
-export const useFrappePostCall = <T = unknown>(
+export const useFrappePostCall = <T = any>(
     method: string,
 ): {
     /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: Record<string, unknown>) => Promise<T>
+    call: (params: ApiParams) => Promise<T>
     /** The result of the API call */
     result: T | null
     /** Will be true when the API request is pending.  */
@@ -109,7 +110,7 @@ export const useFrappePostCall = <T = unknown>(
     }, [])
 
     const call = useCallback(
-        async (params: Record<string, unknown>): Promise<T> => {
+        async (params: ApiParams): Promise<T> => {
             setError(null)
             setIsCompleted(false)
             setLoading(true)
@@ -148,11 +149,11 @@ export const useFrappePostCall = <T = unknown>(
  * @param method - name of the method to call (PUT request) (will be dotted path e.g. "frappe.client.set_value")
  * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
  */
-export const useFrappePutCall = <T = unknown>(
+export const useFrappePutCall = <T = any>(
     method: string,
 ): {
     /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: Record<string, unknown>) => Promise<T>
+    call: (params: ApiParams) => Promise<T>
     /** The result of the API call */
     result: T | null
     /** Will be true when the API request is pending.  */
@@ -179,7 +180,7 @@ export const useFrappePutCall = <T = unknown>(
     }, [])
 
     const call = useCallback(
-        async (params: Record<string, unknown>) => {
+        async (params: ApiParams): Promise<T> => {
             setError(null)
             setIsCompleted(false)
             setLoading(true)
@@ -218,11 +219,11 @@ export const useFrappePutCall = <T = unknown>(
  * @param method - name of the method to call (DELETE request) (will be dotted path e.g. "frappe.client.delete")
  * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
  */
-export const useFrappeDeleteCall = <T = unknown>(
+export const useFrappeDeleteCall = <T = any>(
     method: string,
 ): {
     /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: Record<string, unknown>) => Promise<T>
+    call: (params: ApiParams) => Promise<T>
     /** The result of the API call */
     result: T | null
     /** Will be true when the API request is pending.  */
@@ -249,7 +250,7 @@ export const useFrappeDeleteCall = <T = unknown>(
     }, [])
 
     const call = useCallback(
-        async (params: Record<string, unknown>) => {
+        async (params: ApiParams): Promise<T> => {
             setError(null)
             setIsCompleted(false)
             setLoading(true)

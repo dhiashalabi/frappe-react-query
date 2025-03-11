@@ -42,7 +42,7 @@ export const useSearch = (
  * @param delay - the number of milliseconds to wait before returning the value
  * @returns string value after the specified delay
  */
-const useDebounce = (value: unknown, delay: number) => {
+const useDebounce = (value: string, delay: number) => {
     const [debouncedValue, setDebouncedValue] = useState(value)
 
     useEffect(() => {

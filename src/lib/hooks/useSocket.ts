@@ -16,7 +16,7 @@ import { DocumentUpdateEventData, DocTypeListUpdateEventData, ViewerEventData, F
  * })
  * ```
  */
-export const useFrappeEventListener = <T = unknown>(eventName: string, callback: (eventData: T) => void) => {
+export const useFrappeEventListener = <T = any>(eventName: string, callback: (eventData: T) => void) => {
     const { socket } = useContext(FrappeContext) as FrappeConfig
 
     useEffect(() => {

@@ -1,40 +1,43 @@
-import { useState } from 'react'
-import { useFrappeGetCall, useFrappePrefetchCall } from './lib'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { useFrappeGetCall } from './lib'
 import './App.css'
 import { Login, Logout } from './components/login'
+import { Users } from './pages/Users'
 
 function App() {
-    const [mounted, setMounted] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-
-    const preload = useFrappePrefetchCall('ping')
-
-    const onClick = () => {
-        setIsLoading(true)
-        preload()
-
-        setTimeout(() => {
-            setMounted(true)
-            setIsLoading(false)
-        }, 3000)
-    }
-
     return (
-        <div className="App">
-            <h1>Frappe Query SDK</h1>
-            <div className="card">
-                <button
-                    onClick={onClick}
-                    className={`prefetch-button ${isLoading ? 'loading' : ''}`}
-                    disabled={isLoading}
-                >
-                    {isLoading ? 'Prefetching...' : 'Start Query'}
-                </button>
-                {mounted && <FetchingComponent />}
-                <Login />
-                <Logout />
+        <BrowserRouter>
+            <div className="App">
+                <h1>Frappe Query SDK</h1>
+                <nav>
+                    <ul>
+                        <li>
+                            <Link to="/">Home</Link>
+                        </li>
+                        <li>
+                            <Link to="/users">Users</Link>
+                        </li>
+                    </ul>
+                </nav>
+                <div className="card">
+                    <Routes>
+                        <Route
+                            path="/users"
+                            element={<Users />}
+                        />
+                        <Route
+                            path="/"
+                            element={
+                                <>
+                                    <Login />
+                                    <Logout />
+                                </>
+                            }
+                        />
+                    </Routes>
+                </div>
             </div>
-        </div>
+        </BrowserRouter>
     )
 }
 
