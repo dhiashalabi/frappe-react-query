@@ -1,4 +1,4 @@
-import { GetDocListArgs } from '../types'
+import { FrappeDoc, GetDocListArgs } from '../types'
 
 export const getRequestURL = (doctype: string, url: string, docname?: string | null): string => {
     let requestURL = `${url}/api/resource/`
@@ -11,7 +11,7 @@ export const getRequestURL = (doctype: string, url: string, docname?: string | n
     return requestURL
 }
 
-export const getDocListQueryString = (args?: GetDocListArgs): string => {
+export const getDocListQueryString = (args?: GetDocListArgs<FrappeDoc<any>>): string => {
     let queryString = ''
 
     /** Fields to be fetched */
@@ -59,6 +59,6 @@ export const getDocListQueryString = (args?: GetDocListArgs): string => {
 
 export const encodeQueryData = (data: Record<string, any>) => {
     const ret = []
-    for (let d in data) ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]))
+    for (const d in data) ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]))
     return ret.join('&')
 }

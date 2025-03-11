@@ -23,7 +23,7 @@ export const useFrappeEventListener = <T = any>(eventName: string, callback: (ev
         if (socket === undefined) {
             console.warn('Socket is not enabled. Please enable socket in FrappeProvider.')
         }
-        let listener = socket?.on(eventName, callback)
+        const listener = socket?.on(eventName, callback)
 
         return () => {
             listener?.off(eventName)

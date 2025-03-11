@@ -43,6 +43,7 @@ export const useFrappePrefetchDoc = <T = any>(
     doctype: string,
     name?: string,
     swrKey?: Key,
+    // @ts-ignore
     options?: SWRConfiguration,
 ) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
@@ -87,16 +88,12 @@ export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
  * @param swrKey - The SWRKey to use for caching the result - optional
  * @returns A function to prefetch the list of documents
  */
-export const useFrappePrefetchDocList = <T = any, K = FrappeDoc<T>>(
-    doctype: string,
-    args?: GetDocListArgs<K>,
-    swrKey?: Key,
-) => {
+export const useFrappePrefetchDocList = <T = any>(doctype: string, args?: GetDocListArgs<T>, swrKey?: Key) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
     const key = swrKey === undefined ? `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}` : swrKey
 
     const preloadCall = useCallback(() => {
-        preload(key, () => db.getDocList<T, K>(doctype, args))
+        preload(key, () => db.getDocList<T>(doctype, args))
     }, [key, doctype, args])
 
     return preloadCall

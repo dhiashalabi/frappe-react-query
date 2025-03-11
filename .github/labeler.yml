@@ -1,0 +1,23 @@
+add-test:
+    - 'test'
+
+add-docs:
+    - 'docs'
+
+add-fix:
+    - 'fix'
+
+add-refactor:
+    - 'refactor'
+
+add-chore:
+    - 'chore'
+
+add-ci:
+    - 'ci'
+
+add-perf:
+    - 'perf'
+
+add-style:
+    - 'style'

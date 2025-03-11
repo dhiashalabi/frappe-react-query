@@ -1,16 +1,16 @@
-import { FrappeApp, FrappeAuth, FrappeCall } from '@mussnad/frappe-next-sdk'
-import { FrappeDB } from '@mussnad/frappe-next-sdk/dist/db'
-import { FrappeFileUpload } from '@mussnad/frappe-next-sdk/dist/file'
-import { Error } from '@mussnad/frappe-next-sdk/dist/frappe/types'
-import { Filter, FrappeDoc, GetDocListArgs } from '@mussnad/frappe-next-sdk/dist/db/types'
-import { FileArgs } from '@mussnad/frappe-next-sdk/dist/file/types'
+import { FrappeApp, FrappeAuth, FrappeCall } from '@mussnad/frappe-js-client'
+import { FrappeDB } from '@mussnad/frappe-js-client/dist/db'
+import { FrappeFileUpload } from '@mussnad/frappe-js-client/dist/file'
+import { Error } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { Filter, FrappeDoc, GetDocListArgs } from '@mussnad/frappe-js-client/dist/db/types'
+import { FileArgs } from '@mussnad/frappe-js-client/dist/file/types'
 import { Socket } from 'socket.io-client'
 import {
     AuthCredentials,
     AuthResponse,
     OTPCredentials,
     UserPassCredentials,
-} from '@mussnad/frappe-next-sdk/dist/auth/types'
+} from '@mussnad/frappe-js-client/dist/auth/types'
 import { SWRConfiguration, SWRResponse, Key } from 'swr'
 
 export type {
