@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import useSWR, { SWRConfiguration } from 'swr'
 import { AuthCredentials, AuthResponse, FrappeError as Error, FrappeConfig } from '../types'
-import { FrappeContext } from '../context/FrappeProvider'
+import { FrappeContext } from '../context/FrappeContext'
 
 /**
  * Hook to start listening to user state and provides functions to login/logout
@@ -24,7 +24,7 @@ export const useFrappeAuth = (
     // login: ({username, password,otp,tmp_id}:AuthCredentials) => Promise<AuthResponse>,
     login: (credentials: AuthCredentials) => Promise<AuthResponse>
     /** Function to log the user out */
-    logout: () => Promise<any>
+    logout: () => Promise<void>
     /** Function to fetch updated user state */
     updateCurrentUser: () => void
     /** Function to get the user cookie and */
@@ -55,7 +55,7 @@ export const useFrappeAuth = (
         } else {
             getUserCookie()
         }
-    }, [])
+    }, [getUserCookie, tokenParams])
 
     const {
         data: currentUser,
@@ -82,19 +82,22 @@ export const useFrappeAuth = (
         },
     )
 
-    const login = useCallback(async (credentials: AuthCredentials) => {
-        return auth.loginWithUsernamePassword(credentials).then((m) => {
-            getUserCookie()
-            return m
-        })
-    }, [])
+    const login = useCallback(
+        async (credentials: AuthCredentials) => {
+            return auth.loginWithUsernamePassword(credentials).then((m) => {
+                getUserCookie()
+                return m
+            })
+        },
+        [auth, getUserCookie],
+    )
 
     const logout = useCallback(async () => {
         return auth
             .logout()
             .then(() => updateCurrentUser(null))
             .then(() => setUserID(null))
-    }, [])
+    }, [auth, updateCurrentUser])
 
     return {
         isLoading: userID === undefined || isLoading,

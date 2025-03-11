@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { FrappeContext } from '../context/FrappeProvider'
+import { FrappeContext } from '../context/FrappeContext'
 import { DocumentUpdateEventData, DocTypeListUpdateEventData, ViewerEventData, FrappeConfig } from '../types'
 
 /** useFrappeEventListener hook for listening to events from the server
@@ -16,7 +16,7 @@ import { DocumentUpdateEventData, DocTypeListUpdateEventData, ViewerEventData, F
  * })
  * ```
  */
-export const useFrappeEventListener = <T = any>(eventName: string, callback: (eventData: T) => void) => {
+export const useFrappeEventListener = <T = unknown>(eventName: string, callback: (eventData: T) => void) => {
     const { socket } = useContext(FrappeContext) as FrappeConfig
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export const useFrappeEventListener = <T = any>(eventName: string, callback: (ev
         return () => {
             listener?.off(eventName)
         }
-    }, [eventName, callback])
+    }, [eventName, callback, socket])
 }
 
 /**
@@ -76,7 +76,7 @@ export const useFrappeDocumentEventListener = (
                 socket?.emit('doc_close', doctype, docname)
             }
         }
-    }, [doctype, docname, emitOpenCloseEventsOnMount])
+    }, [doctype, docname, emitOpenCloseEventsOnMount, socket])
 
     useFrappeEventListener('doc_update', onUpdateCallback)
 
@@ -85,14 +85,14 @@ export const useFrappeDocumentEventListener = (
      */
     const emitDocOpen = useCallback(() => {
         socket?.emit('doc_open', doctype, docname)
-    }, [doctype, docname])
+    }, [doctype, docname, socket])
 
     /**
      * Emit doc_close event - this will explicitly send a doc_close event to the server.
      */
     const emitDocClose = useCallback(() => {
         socket?.emit('doc_close', doctype, docname)
-    }, [doctype, docname])
+    }, [doctype, docname, socket])
 
     const onViewerEvent = useCallback(
         (data: ViewerEventData) => {
@@ -143,7 +143,7 @@ export const useFrappeDocTypeEventListener = (
         return () => {
             socket?.emit('doctype_unsubscribe', doctype)
         }
-    }, [doctype])
+    }, [doctype, socket])
 
     useFrappeEventListener('list_update', onListUpdateCallback)
 }

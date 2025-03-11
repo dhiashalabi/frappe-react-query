@@ -1,10 +1,9 @@
-import { PropsWithChildren, createContext, useContext, useMemo } from 'react'
+import { PropsWithChildren, useMemo } from 'react'
 import { FrappeApp } from '@mussnad/frappe-js-client'
 import { SWRConfig, SWRConfiguration } from 'swr'
 import { FrappeConfig, TokenParams } from '../types'
 import { SocketIO } from '../socket'
-
-export const FrappeContext = createContext<null | FrappeConfig>(null)
+import { FrappeContext } from './FrappeContext'
 
 type FrappeProviderProps = PropsWithChildren<{
     /** URL of the Frappe server
@@ -55,54 +54,11 @@ export const FrappeProvider = ({
             enableSocket,
             socketPort,
         }
-    }, [url, tokenParams, socketPort, enableSocket, customHeaders])
+    }, [url, tokenParams, socketPort, enableSocket, customHeaders, siteName])
 
     return (
         <FrappeContext.Provider value={frappeConfig}>
             <SWRConfig value={swrConfig}>{children}</SWRConfig>
         </FrappeContext.Provider>
     )
-}
-
-export const useFrappe = () => {
-    const context = useContext(FrappeContext)
-    if (!context) {
-        throw new Error('useFrappe must be used within a FrappeProvider')
-    }
-    return context
-}
-
-export const useFrappeAuth = () => {
-    const context = useFrappe()
-    return context.auth
-}
-
-export const useFrappeDB = () => {
-    const context = useFrappe()
-    return context.db
-}
-
-export const useFrappeCall = () => {
-    const context = useFrappe()
-    return context.call
-}
-
-export const useFrappeFile = () => {
-    const context = useFrappe()
-    return context.file
-}
-
-export const useFrappeSocket = () => {
-    const context = useFrappe()
-    return context.socket
-}
-
-export const useFrappeApp = () => {
-    const context = useFrappe()
-    return context.app
-}
-
-export const useFrappeConfig = () => {
-    const context = useFrappe()
-    return context
 }

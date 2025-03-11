@@ -1,5 +1,5 @@
 import { useCallback, useContext, useState } from 'react'
-import { FrappeContext } from '../context/FrappeProvider'
+import { FrappeContext } from '../context/FrappeContext'
 import { FileArgs, FrappeError as Error, FrappeFileUploadResponse, FrappeConfig } from '../types'
 
 interface UseFrappeFileUploadReturnType {
@@ -37,40 +37,43 @@ export const useFrappeFileUpload = (): UseFrappeFileUploadReturnType => {
     const [error, setError] = useState<Error | null>(null)
     const [isCompleted, setIsCompleted] = useState(false)
 
-    const upload = useCallback(async (f: File, args: FileArgs, apiPath?: string) => {
-        reset()
-        setLoading(true)
-        return file
-            .uploadFile(
-                f,
-                args,
-                (c, t) => {
-                    if (t) {
-                        setProgress(Math.round((c / t) * 100))
-                    }
-                },
-                apiPath,
-            )
-            .then((r) => {
-                setIsCompleted(true)
-                setProgress(100)
-                setLoading(false)
-                return r.data.message
-            })
-            .catch((e) => {
-                console.error(e)
-                setError(e)
-                setLoading(false)
-                throw e
-            })
-    }, [])
-
     const reset = useCallback(() => {
         setProgress(0)
         setLoading(false)
         setError(null)
         setIsCompleted(false)
     }, [])
+
+    const upload = useCallback(
+        async (f: File, args: FileArgs, apiPath?: string) => {
+            reset()
+            setLoading(true)
+            return file
+                .uploadFile(
+                    f,
+                    args,
+                    (c, t) => {
+                        if (t) {
+                            setProgress(Math.round((c / t) * 100))
+                        }
+                    },
+                    apiPath,
+                )
+                .then((r) => {
+                    setIsCompleted(true)
+                    setProgress(100)
+                    setLoading(false)
+                    return r.data.message
+                })
+                .catch((e) => {
+                    console.error(e)
+                    setError(e)
+                    setLoading(false)
+                    throw e
+                })
+        },
+        [file, reset],
+    )
 
     return {
         upload,

@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from 'react'
 import useSWR, { Key, SWRConfiguration, SWRResponse, useSWRConfig, preload } from 'swr'
-import { FrappeContext } from '../context/FrappeProvider'
+import { FrappeContext } from '../context/FrappeContext'
 import { FrappeError as Error, FrappeConfig } from '../types'
 import { encodeQueryData } from '../utils'
 export { useSWR, useSWRConfig, preload }
@@ -22,9 +22,9 @@ export { useSWR, useSWRConfig, preload }
  * const { data, error, isLoading, mutate } = useFrappeGetCall("ping")
  *
  */
-export const useFrappeGetCall = <T = any>(
+export const useFrappeGetCall = <T = unknown>(
     method: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
     swrKey?: Key,
     options?: SWRConfiguration,
     type: 'GET' | 'POST' = 'GET',
@@ -56,9 +56,9 @@ export const useFrappeGetCall = <T = any>(
  * @typeParam T - Type of the data returned by the method
  * @returns an object (SWRResponse) with the following properties: data (number), error, isValidating, isLoading, and mutate
  */
-export const useFrappePrefetchCall = <T = any>(
+export const useFrappePrefetchCall = <T = unknown>(
     method: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
     swrKey?: Key,
     type: 'GET' | 'POST' = 'GET',
 ) => {
@@ -68,7 +68,7 @@ export const useFrappePrefetchCall = <T = any>(
 
     const preloadCall = useCallback(() => {
         preload(swrKey ?? url, type === 'GET' ? () => call.get<T>(method, params) : () => call.post<T>(method, params))
-    }, [url, method, params, swrKey])
+    }, [url, method, params, swrKey, call, type])
 
     return preloadCall
 }
@@ -78,11 +78,11 @@ export const useFrappePrefetchCall = <T = any>(
  * @param method - name of the method to call (POST request) (will be dotted path e.g. "frappe.client.set_value")
  * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
  */
-export const useFrappePostCall = <T = any>(
+export const useFrappePostCall = <T = unknown>(
     method: string,
 ): {
     /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: Record<string, any>) => Promise<T>
+    call: (params: Record<string, unknown>) => Promise<T>
     /** The result of the API call */
     result: T | null
     /** Will be true when the API request is pending.  */
@@ -108,27 +108,30 @@ export const useFrappePostCall = <T = any>(
         setIsCompleted(false)
     }, [])
 
-    const call = useCallback(async (params: Record<string, any>): Promise<T> => {
-        setError(null)
-        setIsCompleted(false)
-        setLoading(true)
-        setResult(null)
+    const call = useCallback(
+        async (params: Record<string, unknown>): Promise<T> => {
+            setError(null)
+            setIsCompleted(false)
+            setLoading(true)
+            setResult(null)
 
-        return frappeCall
-            .post<T>(method, params)
-            .then((message) => {
-                setResult(message)
-                setLoading(false)
-                setIsCompleted(true)
-                return message
-            })
-            .catch((error) => {
-                setLoading(false)
-                setIsCompleted(false)
-                setError(error)
-                throw error
-            })
-    }, [])
+            return frappeCall
+                .post<T>(method, params)
+                .then((message) => {
+                    setResult(message)
+                    setLoading(false)
+                    setIsCompleted(true)
+                    return message
+                })
+                .catch((error) => {
+                    setLoading(false)
+                    setIsCompleted(false)
+                    setError(error)
+                    throw error
+                })
+        },
+        [frappeCall, method],
+    )
 
     return {
         call,
@@ -145,11 +148,11 @@ export const useFrappePostCall = <T = any>(
  * @param method - name of the method to call (PUT request) (will be dotted path e.g. "frappe.client.set_value")
  * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
  */
-export const useFrappePutCall = <T = any>(
+export const useFrappePutCall = <T = unknown>(
     method: string,
 ): {
     /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: Record<string, any>) => Promise<T>
+    call: (params: Record<string, unknown>) => Promise<T>
     /** The result of the API call */
     result: T | null
     /** Will be true when the API request is pending.  */
@@ -175,27 +178,30 @@ export const useFrappePutCall = <T = any>(
         setIsCompleted(false)
     }, [])
 
-    const call = useCallback(async (params: Record<string, any>) => {
-        setError(null)
-        setIsCompleted(false)
-        setLoading(true)
-        setResult(null)
+    const call = useCallback(
+        async (params: Record<string, unknown>) => {
+            setError(null)
+            setIsCompleted(false)
+            setLoading(true)
+            setResult(null)
 
-        return frappeCall
-            .put<T>(method, params)
-            .then((message) => {
-                setResult(message)
-                setLoading(false)
-                setIsCompleted(true)
-                return message
-            })
-            .catch((error) => {
-                setLoading(false)
-                setIsCompleted(false)
-                setError(error)
-                throw error
-            })
-    }, [])
+            return frappeCall
+                .put<T>(method, params)
+                .then((message) => {
+                    setResult(message)
+                    setLoading(false)
+                    setIsCompleted(true)
+                    return message
+                })
+                .catch((error) => {
+                    setLoading(false)
+                    setIsCompleted(false)
+                    setError(error)
+                    throw error
+                })
+        },
+        [frappeCall, method],
+    )
 
     return {
         call,
@@ -212,11 +218,11 @@ export const useFrappePutCall = <T = any>(
  * @param method - name of the method to call (DELETE request) (will be dotted path e.g. "frappe.client.delete")
  * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
  */
-export const useFrappeDeleteCall = <T = any>(
+export const useFrappeDeleteCall = <T = unknown>(
     method: string,
 ): {
     /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: Record<string, any>) => Promise<T>
+    call: (params: Record<string, unknown>) => Promise<T>
     /** The result of the API call */
     result: T | null
     /** Will be true when the API request is pending.  */
@@ -242,27 +248,30 @@ export const useFrappeDeleteCall = <T = any>(
         setIsCompleted(false)
     }, [])
 
-    const call = useCallback(async (params: Record<string, any>) => {
-        setError(null)
-        setIsCompleted(false)
-        setLoading(true)
-        setResult(null)
+    const call = useCallback(
+        async (params: Record<string, unknown>) => {
+            setError(null)
+            setIsCompleted(false)
+            setLoading(true)
+            setResult(null)
 
-        return frappeCall
-            .delete<T>(method, params)
-            .then((message) => {
-                setResult(message)
-                setLoading(false)
-                setIsCompleted(true)
-                return message
-            })
-            .catch((error) => {
-                setLoading(false)
-                setIsCompleted(false)
-                setError(error)
-                throw error
-            })
-    }, [])
+            return frappeCall
+                .delete<T>(method, params)
+                .then((message) => {
+                    setResult(message)
+                    setLoading(false)
+                    setIsCompleted(true)
+                    return message
+                })
+                .catch((error) => {
+                    setLoading(false)
+                    setIsCompleted(false)
+                    setError(error)
+                    throw error
+                })
+        },
+        [frappeCall, method],
+    )
 
     return {
         call,

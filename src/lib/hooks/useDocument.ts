@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react'
 import useSWR, { Key, SWRConfiguration, SWRResponse, preload } from 'swr'
 import { FrappeConfig, FrappeDoc, GetDocListArgs, Filter, FrappeError as Error } from '../types'
-import { FrappeContext } from '../context/FrappeProvider'
+import { FrappeContext } from '../context/FrappeContext'
 import { getRequestURL, getDocListQueryString, encodeQueryData } from '../utils'
 
 /**
@@ -14,7 +14,7 @@ import { getRequestURL, getDocListQueryString, encodeQueryData } from '../utils'
  *
  * @typeParam T - The type of the document
  */
-export const useFrappeGetDoc = <T = any>(
+export const useFrappeGetDoc = <T = unknown>(
     doctype: string,
     name?: string,
     swrKey?: Key,
@@ -39,18 +39,18 @@ export const useFrappeGetDoc = <T = any>(
  * @param options - The SWRConfiguration options for fetching data
  * @returns A function to prefetch the document
  */
-export const useFrappePrefetchDoc = <T = any>(
+export const useFrappePrefetchDoc = <T = unknown>(
     doctype: string,
     name?: string,
     swrKey?: Key,
-    // @ts-ignore
+    // @ts-expect-error - SWRConfiguration is not typed
     options?: SWRConfiguration,
 ) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
     const key = swrKey === undefined ? getRequestURL(doctype, url, name) : swrKey
     const preloadCall = useCallback(() => {
         preload(key, () => db.getDoc<T>(doctype, name))
-    }, [key, doctype, name])
+    }, [key, doctype, name, db])
     return preloadCall
 }
 
@@ -64,7 +64,7 @@ export const useFrappePrefetchDoc = <T = any>(
  *
  * @typeParam T - The type definition of the document object
  */
-export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
+export const useFrappeGetDocList = <T = unknown, K = FrappeDoc<T>>(
     doctype: string,
     args?: GetDocListArgs<K>,
     swrKey?: Key,
@@ -88,13 +88,13 @@ export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
  * @param swrKey - The SWRKey to use for caching the result - optional
  * @returns A function to prefetch the list of documents
  */
-export const useFrappePrefetchDocList = <T = any>(doctype: string, args?: GetDocListArgs<T>, swrKey?: Key) => {
+export const useFrappePrefetchDocList = <T = unknown>(doctype: string, args?: GetDocListArgs<T>, swrKey?: Key) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
     const key = swrKey === undefined ? `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}` : swrKey
 
     const preloadCall = useCallback(() => {
         preload(key, () => db.getDocList<T>(doctype, args))
-    }, [key, doctype, args])
+    }, [key, doctype, args, db])
 
     return preloadCall
 }
@@ -103,7 +103,7 @@ export const useFrappePrefetchDocList = <T = any>(doctype: string, args?: GetDoc
  * Hook to create a document in the database and maintain loading and error states
  * @returns Object with the following properties: loading, error, isCompleted and createDoc and reset functions
  */
-export const useFrappeCreateDoc = <T = any>(): {
+export const useFrappeCreateDoc = <T = unknown>(): {
     /** Function to create a document in the database */
     createDoc: (doctype: string, doc: T) => Promise<FrappeDoc<T>>
     /** Will be true when the API request is pending.  */
@@ -126,25 +126,28 @@ export const useFrappeCreateDoc = <T = any>(): {
         setIsCompleted(false)
     }, [])
 
-    const createDoc = useCallback(async (doctype: string, doc: T) => {
-        setError(null)
-        setIsCompleted(false)
-        setLoading(true)
+    const createDoc = useCallback(
+        async (doctype: string, doc: T) => {
+            setError(null)
+            setIsCompleted(false)
+            setLoading(true)
 
-        return db
-            .createDoc<T>(doctype, doc)
-            .then((document) => {
-                setLoading(false)
-                setIsCompleted(true)
-                return document
-            })
-            .catch((error) => {
-                setLoading(false)
-                setIsCompleted(false)
-                setError(error)
-                throw error
-            })
-    }, [])
+            return db
+                .createDoc<T>(doctype, doc)
+                .then((document) => {
+                    setLoading(false)
+                    setIsCompleted(true)
+                    return document
+                })
+                .catch((error) => {
+                    setLoading(false)
+                    setIsCompleted(false)
+                    setError(error)
+                    throw error
+                })
+        },
+        [db],
+    )
 
     return {
         createDoc,
@@ -159,7 +162,7 @@ export const useFrappeCreateDoc = <T = any>(): {
  * Hook to update a document in the database and maintain loading and error states
  * @returns Object with the following properties: loading, error, isCompleted and updateDoc and reset functions
  */
-export const useFrappeUpdateDoc = <T = any>(): {
+export const useFrappeUpdateDoc = <T = unknown>(): {
     /** Function to update a document in the database */
     updateDoc: (doctype: string, docname: string | null, doc: Partial<T>) => Promise<FrappeDoc<T>>
     /** Will be true when the API request is pending.  */
@@ -182,24 +185,27 @@ export const useFrappeUpdateDoc = <T = any>(): {
         setIsCompleted(false)
     }, [])
 
-    const updateDoc = useCallback(async (doctype: string, docname: string | null, doc: Partial<T>) => {
-        setError(null)
-        setIsCompleted(false)
-        setLoading(true)
-        return db
-            .updateDoc<T>(doctype, docname, doc)
-            .then((document) => {
-                setLoading(false)
-                setIsCompleted(true)
-                return document
-            })
-            .catch((error) => {
-                setLoading(false)
-                setIsCompleted(false)
-                setError(error)
-                throw error
-            })
-    }, [])
+    const updateDoc = useCallback(
+        async (doctype: string, docname: string | null, doc: Partial<T>) => {
+            setError(null)
+            setIsCompleted(false)
+            setLoading(true)
+            return db
+                .updateDoc<T>(doctype, docname, doc)
+                .then((document) => {
+                    setLoading(false)
+                    setIsCompleted(true)
+                    return document
+                })
+                .catch((error) => {
+                    setLoading(false)
+                    setIsCompleted(false)
+                    setError(error)
+                    throw error
+                })
+        },
+        [db],
+    )
 
     return {
         updateDoc,
@@ -237,25 +243,28 @@ export const useFrappeDeleteDoc = (): {
         setIsCompleted(false)
     }, [])
 
-    const deleteDoc = useCallback(async (doctype: string, docname?: string | null): Promise<{ message: string }> => {
-        setError(null)
-        setIsCompleted(false)
-        setLoading(true)
+    const deleteDoc = useCallback(
+        async (doctype: string, docname?: string | null): Promise<{ message: string }> => {
+            setError(null)
+            setIsCompleted(false)
+            setLoading(true)
 
-        return db
-            .deleteDoc(doctype, docname)
-            .then((message) => {
-                setLoading(false)
-                setIsCompleted(true)
-                return message
-            })
-            .catch((error) => {
-                setLoading(false)
-                setIsCompleted(false)
-                setError(error)
-                throw error
-            })
-    }, [])
+            return db
+                .deleteDoc(doctype, docname)
+                .then((message) => {
+                    setLoading(false)
+                    setIsCompleted(true)
+                    return message
+                })
+                .catch((error) => {
+                    setLoading(false)
+                    setIsCompleted(false)
+                    setError(error)
+                    throw error
+                })
+        },
+        [db],
+    )
 
     return {
         deleteDoc,
@@ -311,7 +320,7 @@ export const useFrappeGetDocCount = <T = any>(
  * @param swrKey - The SWRKey to use for caching the result - optional
  * @returns A function to prefetch the number of documents
  */
-export const useFrappePrefetchDocCount = <T = any>(
+export const useFrappePrefetchDocCount = <T = unknown>(
     doctype: string,
     filters?: Filter<T>[],
     cache: boolean = false,
@@ -330,6 +339,6 @@ export const useFrappePrefetchDocCount = <T = any>(
             : swrKey
     const preloadCall = useCallback(() => {
         preload(key, () => db.getCount<T>(doctype, filters, false, false))
-    }, [key, doctype, filters])
+    }, [key, doctype, filters, db])
     return preloadCall
 }
