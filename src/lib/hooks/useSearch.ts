@@ -1,8 +1,14 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useEffect } from 'react'
 import { Filter } from '../types'
-import { useFrappeGetCall } from './useAPI'
 import { SearchResult } from '../types'
+import { useQuery } from '@tanstack/react-query'
+import { FrappeContext } from '../context/FrappeContext'
+import type { FrappeConfig } from '../types'
+
+/**
+ * Type for validate link response with dynamic fields
+ */
 
 /**
  * Hook to search for documents - only works with Frappe v15+
@@ -27,13 +33,27 @@ export const useSearch = (
     debounce: number = 250,
 ) => {
     const debouncedText = useDebounce(text, debounce)
-    const swrResult = useFrappeGetCall<{ message: SearchResult[] }>('frappe.desk.search.search_link', {
-        doctype,
-        page_length: limit,
-        txt: debouncedText,
-        filters: JSON.stringify(filters ?? []),
+    const { call } = useContext(FrappeContext) as FrappeConfig
+
+    const query = useQuery<{ message: SearchResult[] }>({
+        queryKey: ['search', doctype, debouncedText, filters, limit],
+        queryFn: () =>
+            call.get('frappe.desk.search.search_link', {
+                doctype,
+                page_length: limit,
+                txt: debouncedText,
+                filters: JSON.stringify(filters ?? []),
+            }),
+        enabled: debouncedText !== '',
     })
-    return swrResult
+
+    return {
+        ...query,
+        data: query.data,
+        error: query.error,
+        isValidating: query.isFetching,
+        mutate: query.refetch,
+    }
 }
 
 /**
