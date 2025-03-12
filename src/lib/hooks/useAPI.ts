@@ -1,285 +1,121 @@
-import { useCallback, useContext, useState } from 'react'
-import useSWR, { Key, SWRConfiguration, SWRResponse, useSWRConfig, preload } from 'swr'
+import { useCallback, useContext } from 'react'
+import { useQuery, useMutation, useQueryClient, QueryKey } from '@tanstack/react-query'
 import { FrappeContext } from '../context/FrappeContext'
 import { FrappeError as Error, FrappeConfig } from '../types'
 import { encodeQueryData } from '../utils'
 import { ApiParams } from '@mussnad/frappe-js-client'
-export { useSWR, useSWRConfig, preload }
 
 /**
  *  Hook to make a GET request to the server
  *
  * @param method - name of the method to call (will be dotted path e.g. "frappe.client.get_list")
  * @param params - parameters to pass to the method
- * @param swrKey - optional SWRKey that will be used to cache the result. If not provided, the method name with the URL params will be used as the key
- * @param options [Optional] SWRConfiguration options for fetching data
+ * @param queryKey - optional QueryKey that will be used to cache the result. If not provided, the method name with the URL params will be used as the key
+ * @param options [Optional] React Query configuration options for fetching data
  * @param type - type of the request to make - defaults to GET
  *
  * @typeParam T - Type of the data returned by the method
- * @returns an object (SWRResponse) with the following properties: data (number), error, isValidating, isLoading, and mutate
- *
- * @example
- *
- * const { data, error, isLoading, mutate } = useFrappeGetCall("ping")
- *
+ * @returns an object with data, error, isLoading, and other React Query properties
  */
 export const useFrappeGetCall = <T = any>(
     method: string,
     params?: ApiParams,
-    swrKey?: Key,
-    options?: SWRConfiguration,
-    type: 'GET' | 'POST' = 'GET',
-): SWRResponse<T, Error> => {
-    const { call } = useContext(FrappeContext) as FrappeConfig
-    const urlParams = encodeQueryData(params ?? {})
-    const url = `${method}?${urlParams}`
-
-    const swrResult = useSWR<T, Error>(
-        swrKey === undefined ? url : swrKey,
-        type === 'GET' ? () => call.get(method, params) : () => call.post(method, params),
-        options,
-    )
-
-    return {
-        ...swrResult,
-    }
-}
-
-/**
- *  Hook to make a GET request to the server
- *
- * @param method - name of the method to call (will be dotted path e.g. "frappe.client.get_list")
- * @param params - parameters to pass to the method
- * @param swrKey - optional SWRKey that will be used to cache the result. If not provided, the method name with the URL params will be used as the key
- * @param options [Optional] SWRConfiguration options for fetching data
- * @param type - type of the request to make - defaults to GET
- *
- * @typeParam T - Type of the data returned by the method
- * @returns an object (SWRResponse) with the following properties: data (number), error, isValidating, isLoading, and mutate
- */
-export const useFrappePrefetchCall = <T = any>(
-    method: string,
-    params?: ApiParams,
-    swrKey?: Key,
+    queryKey?: QueryKey,
+    options?: any,
     type: 'GET' | 'POST' = 'GET',
 ) => {
     const { call } = useContext(FrappeContext) as FrappeConfig
     const urlParams = encodeQueryData(params ?? {})
-    const url = `${method}?${urlParams}`
+    const defaultKey = [method, urlParams]
 
-    const preloadCall = useCallback(() => {
-        preload(swrKey ?? url, type === 'GET' ? () => call.get<T>(method, params) : () => call.post<T>(method, params))
-    }, [url, method, params, swrKey, call, type])
-
-    return preloadCall
+    return useQuery<T>({
+        queryKey: queryKey || defaultKey,
+        queryFn: () =>
+            type === 'GET'
+                ? call.get(method, params).then((res) => res.message)
+                : call.post(method, params).then((res) => res.message),
+        ...options,
+    })
 }
 
 /**
- *
- * @param method - name of the method to call (POST request) (will be dotted path e.g. "frappe.client.set_value")
- * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
+ *  Hook to prefetch data
  */
-export const useFrappePostCall = <T = any>(
+export const useFrappePrefetchCall = <T = any>(
     method: string,
-): {
-    /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: ApiParams) => Promise<T>
-    /** The result of the API call */
-    result: T | null
-    /** Will be true when the API request is pending.  */
-    loading: boolean
-    /** Error object returned from API call */
-    error: Error | null
-    /** Will be true if API call is successful. Else false */
-    isCompleted: boolean
-    /** Function to reset the state of the hook */
-    reset: () => void
-} => {
+    params?: ApiParams,
+    queryKey?: QueryKey,
+    type: 'GET' | 'POST' = 'GET',
+) => {
+    const { call } = useContext(FrappeContext) as FrappeConfig
+    const queryClient = useQueryClient()
+    const urlParams = encodeQueryData(params ?? {})
+    const defaultKey = [method, urlParams]
+
+    return useCallback(() => {
+        queryClient.prefetchQuery({
+            queryKey: queryKey || defaultKey,
+            queryFn: () =>
+                type === 'GET'
+                    ? call.get<T>(method, params).then((res) => res.message)
+                    : call.post<T>(method, params).then((res) => res.message),
+        })
+    }, [method, params, queryKey, type, call, queryClient, defaultKey])
+}
+
+/**
+ * Hook for POST requests
+ */
+export const useFrappePostCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
-
-    const [result, setResult] = useState<T | null>(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
-    const [isCompleted, setIsCompleted] = useState(false)
-
-    const reset = useCallback(() => {
-        setResult(null)
-        setLoading(false)
-        setError(null)
-        setIsCompleted(false)
-    }, [])
-
-    const call = useCallback(
-        async (params: ApiParams): Promise<T> => {
-            setError(null)
-            setIsCompleted(false)
-            setLoading(true)
-            setResult(null)
-
-            return frappeCall
-                .post<T>(method, params)
-                .then((message) => {
-                    setResult(message)
-                    setLoading(false)
-                    setIsCompleted(true)
-                    return message
-                })
-                .catch((error) => {
-                    setLoading(false)
-                    setIsCompleted(false)
-                    setError(error)
-                    throw error
-                })
-        },
-        [frappeCall, method],
-    )
+    const mutation = useMutation<T, Error, ApiParams>({
+        mutationFn: (params) => frappeCall.post<T>(method, params).then((res) => res.message),
+    })
 
     return {
-        call,
-        result,
-        loading,
-        error,
-        reset,
-        isCompleted,
+        call: mutation.mutate,
+        result: mutation.data,
+        loading: mutation.isPending,
+        error: mutation.error,
+        isCompleted: mutation.isSuccess,
+        reset: mutation.reset,
     }
 }
 
 /**
- *
- * @param method - name of the method to call (PUT request) (will be dotted path e.g. "frappe.client.set_value")
- * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
+ * Hook for PUT requests
  */
-export const useFrappePutCall = <T = any>(
-    method: string,
-): {
-    /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: ApiParams) => Promise<T>
-    /** The result of the API call */
-    result: T | null
-    /** Will be true when the API request is pending.  */
-    loading: boolean
-    /** Error object returned from API call */
-    error: Error | null
-    /** Will be true if API call is successful. Else false */
-    isCompleted: boolean
-    /** Function to reset the state of the hook */
-    reset: () => void
-} => {
+export const useFrappePutCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
-
-    const [result, setResult] = useState<T | null>(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
-    const [isCompleted, setIsCompleted] = useState(false)
-
-    const reset = useCallback(() => {
-        setResult(null)
-        setLoading(false)
-        setError(null)
-        setIsCompleted(false)
-    }, [])
-
-    const call = useCallback(
-        async (params: ApiParams): Promise<T> => {
-            setError(null)
-            setIsCompleted(false)
-            setLoading(true)
-            setResult(null)
-
-            return frappeCall
-                .put<T>(method, params)
-                .then((message) => {
-                    setResult(message)
-                    setLoading(false)
-                    setIsCompleted(true)
-                    return message
-                })
-                .catch((error) => {
-                    setLoading(false)
-                    setIsCompleted(false)
-                    setError(error)
-                    throw error
-                })
-        },
-        [frappeCall, method],
-    )
+    const mutation = useMutation<T, Error, ApiParams>({
+        mutationFn: (params) => frappeCall.put<T>(method, params).then((res) => res.message),
+    })
 
     return {
-        call,
-        result,
-        loading,
-        error,
-        reset,
-        isCompleted,
+        call: mutation.mutate,
+        result: mutation.data,
+        loading: mutation.isPending,
+        error: mutation.error,
+        isCompleted: mutation.isSuccess,
+        reset: mutation.reset,
     }
 }
 
 /**
- *
- * @param method - name of the method to call (DELETE request) (will be dotted path e.g. "frappe.client.delete")
- * @returns an object with the following properties: loading, error, isCompleted , result, and call and reset functions
+ * Hook for DELETE requests
  */
-export const useFrappeDeleteCall = <T = any>(
-    method: string,
-): {
-    /** Function to call the method. Returns a promise which resolves to the data returned by the method */
-    call: (params: ApiParams) => Promise<T>
-    /** The result of the API call */
-    result: T | null
-    /** Will be true when the API request is pending.  */
-    loading: boolean
-    /** Error object returned from API call */
-    error: Error | null
-    /** Will be true if API call is successful. Else false */
-    isCompleted: boolean
-    /** Function to reset the state of the hook */
-    reset: () => void
-} => {
+export const useFrappeDeleteCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
-
-    const [result, setResult] = useState<T | null>(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
-    const [isCompleted, setIsCompleted] = useState(false)
-
-    const reset = useCallback(() => {
-        setResult(null)
-        setLoading(false)
-        setError(null)
-        setIsCompleted(false)
-    }, [])
-
-    const call = useCallback(
-        async (params: ApiParams): Promise<T> => {
-            setError(null)
-            setIsCompleted(false)
-            setLoading(true)
-            setResult(null)
-
-            return frappeCall
-                .delete<T>(method, params)
-                .then((message) => {
-                    setResult(message)
-                    setLoading(false)
-                    setIsCompleted(true)
-                    return message
-                })
-                .catch((error) => {
-                    setLoading(false)
-                    setIsCompleted(false)
-                    setError(error)
-                    throw error
-                })
-        },
-        [frappeCall, method],
-    )
+    const mutation = useMutation<T, Error, ApiParams>({
+        mutationFn: (params) => frappeCall.delete<T>(method, params).then((res) => res.message),
+    })
 
     return {
-        call,
-        result,
-        loading,
-        error,
-        reset,
-        isCompleted,
+        call: mutation.mutate,
+        result: mutation.data,
+        loading: mutation.isPending,
+        error: mutation.error,
+        isCompleted: mutation.isSuccess,
+        reset: mutation.reset,
     }
 }

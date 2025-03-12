@@ -1,10 +1,11 @@
 import { useCallback, useContext, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { FrappeContext } from '../context/FrappeContext'
 import { FileArgs, FrappeError as Error, FrappeFileUploadResponse, FrappeConfig } from '../types'
 
-interface UseFrappeFileUploadReturnType {
+interface UseFrappeFileUploadReturnType<T = FrappeFileUploadResponse> {
     /** Function to upload the file */
-    upload: (file: File, args: FileArgs, apiPath?: string) => Promise<FrappeFileUploadResponse>
+    upload: (file: File, args: FileArgs, apiPath?: string) => Promise<T>
     /** Upload Progress in % - rounded off */
     progress: number
     /** Will be true when the file is being uploaded  */
@@ -32,55 +33,55 @@ interface UseFrappeFileUploadReturnType {
  */
 export const useFrappeFileUpload = (): UseFrappeFileUploadReturnType => {
     const { file } = useContext(FrappeContext) as FrappeConfig
-    const [progress, setProgress] = useState(0)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
-    const [isCompleted, setIsCompleted] = useState(false)
+    const [uploadProgress, setUploadProgress] = useState(0)
 
-    const reset = useCallback(() => {
-        setProgress(0)
-        setLoading(false)
-        setError(null)
-        setIsCompleted(false)
-    }, [])
+    const mutation = useMutation<
+        FrappeFileUploadResponse,
+        Error,
+        {
+            f: File
+            args: FileArgs
+            apiPath?: string
+            onProgress?: (
+                bytesUploaded: number,
+                totalBytes?: number,
+                progress?: import('axios').AxiosProgressEvent,
+            ) => void
+        }
+    >({
+        mutationFn: async ({ f, args, apiPath, onProgress }) => {
+            return file.uploadFile(f, args, onProgress, apiPath).then((r) => r.data.message)
+        },
+    })
 
     const upload = useCallback(
         async (f: File, args: FileArgs, apiPath?: string) => {
-            reset()
-            setLoading(true)
-            return file
-                .uploadFile(
-                    f,
-                    args,
-                    (c, t) => {
-                        if (t) {
-                            setProgress(Math.round((c / t) * 100))
-                        }
-                    },
-                    apiPath,
-                )
-                .then((r) => {
-                    setIsCompleted(true)
-                    setProgress(100)
-                    setLoading(false)
-                    return r.data.message
-                })
-                .catch((e) => {
-                    console.error(e)
-                    setError(e)
-                    setLoading(false)
-                    throw e
-                })
+            setUploadProgress(0)
+            return mutation.mutateAsync({
+                f,
+                args,
+                apiPath,
+                onProgress: (bytesUploaded: number, totalBytes?: number) => {
+                    if (totalBytes) {
+                        setUploadProgress(Math.round((bytesUploaded / totalBytes) * 100))
+                    }
+                },
+            })
         },
-        [file, reset],
+        [mutation],
     )
+
+    const reset = useCallback(() => {
+        setUploadProgress(0)
+        mutation.reset()
+    }, [mutation])
 
     return {
         upload,
-        progress,
-        loading,
-        isCompleted,
-        error,
+        progress: mutation.isSuccess ? 100 : uploadProgress,
+        loading: mutation.isPending,
+        error: mutation.error as Error | null,
+        isCompleted: mutation.isSuccess,
         reset,
     }
 }

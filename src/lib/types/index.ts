@@ -55,6 +55,12 @@ export interface SearchResult {
     description: string
 }
 
+export interface ValidateLinkResponse<T extends string[]> {
+    message: {
+        [K in T[number]]: string
+    }
+}
+
 export interface ViewerEventData {
     doctype: string
     docname: string

@@ -1,51 +1,62 @@
 import { useCallback, useContext, useState } from 'react'
-import useSWR, { Key, SWRConfiguration, SWRResponse, preload } from 'swr'
 import { FrappeConfig, FrappeDoc, GetDocListArgs, Filter, FrappeError as Error } from '../types'
 import { FrappeContext } from '../context/FrappeContext'
-import { getRequestURL, getDocListQueryString, encodeQueryData } from '../utils'
-import { useQuery, UseQueryOptions } from '@tanstack/react-query'
+import { getRequestURL, getDocListQueryString } from '../utils'
+import { useQuery, UseQueryOptions, useQueryClient, useMutation } from '@tanstack/react-query'
 
 /**
  * Hook to fetch a document from the database
  *
  * @param doctype - The doctype to fetch
  * @param name - the name of the document to fetch
- * @param options [Optional] SWRConfiguration options for fetching data
- * @returns an object (SWRResponse) with the following properties: data, error, isValidating, and mutate
+ * @param options [Optional] UseQueryOptions options for fetching data
+ * @returns an object with the following properties: data, error, isValidating, and mutate
  *
  * @typeParam T - The type of the document
  */
 export const useFrappeGetDoc = <T = any>(
     doctype: string,
     name?: string,
-    swrKey?: Key,
-    options?: SWRConfiguration,
-): SWRResponse<FrappeDoc<T>, Error> => {
+    queryKey?: readonly any[],
+    options?: UseQueryOptions<FrappeDoc<T>, Error>,
+) => {
     const { url, db } = useContext(FrappeContext) as FrappeConfig
+    const defaultQueryKey = ['frappe', doctype, name, getRequestURL(doctype, url, name)]
 
-    const swrResult = useSWR<FrappeDoc<T>, Error>(
-        swrKey === undefined ? getRequestURL(doctype, url, name) : swrKey,
-        () => db.getDoc<T>(doctype, name),
-        options,
-    )
+    const query = useQuery<FrappeDoc<T>, Error>({
+        queryKey: queryKey ?? defaultQueryKey,
+        queryFn: () => db.getDoc<T>(doctype, name),
+        ...options,
+    })
 
-    return swrResult
+    return {
+        ...query,
+        data: query.data,
+        error: query.error,
+        isValidating: query.isFetching,
+        mutate: query.refetch,
+    }
 }
 
 /**
  * Hook to prefetch a document from the database
  * @param doctype - The doctype to fetch
  * @param name - The name of the document to fetch
- * @param swrKey - The SWRKey to use for caching the result - optional
- * @param options - The SWRConfiguration options for fetching data
+ * @param queryKey - The queryKey to use for caching the result - optional
  * @returns A function to prefetch the document
  */
-export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, swrKey?: Key) => {
+export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, queryKey?: readonly any[]) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
-    const key = swrKey === undefined ? getRequestURL(doctype, url, name) : swrKey
+    const queryClient = useQueryClient()
+    const defaultQueryKey = ['frappe', doctype, name, getRequestURL(doctype, url, name)]
+
     const preloadCall = useCallback(() => {
-        preload(key, () => db.getDoc<T>(doctype, name))
-    }, [key, doctype, name, db])
+        return queryClient.prefetchQuery({
+            queryKey: queryKey ?? defaultQueryKey,
+            queryFn: () => db.getDoc<T>(doctype, name),
+        })
+    }, [queryClient, queryKey, defaultQueryKey, doctype, name, db])
+
     return preloadCall
 }
 
@@ -54,30 +65,33 @@ export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, sw
  *
  * @param doctype Name of the doctype to fetch
  * @param args Arguments to pass (filters, pagination, etc)
- * @param options [Optional] SWRConfiguration options for fetching data
- * @returns an object (SWRResponse) with the following properties: data, error, isValidating, and mutate
+ * @param queryKey Optional query key for caching
+ * @param options [Optional] UseQueryOptions for React Query
+ * @returns an object with data, error, isValidating, and mutate properties
  *
  * @typeParam T - The type definition of the document object
+ * @typeParam K - The type of the document for args
  */
 export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
     doctype: string,
     args?: GetDocListArgs<K>,
-    swrKey?: Key,
+    queryKey?: readonly any[],
     options?: UseQueryOptions<T[], Error>,
 ) => {
     const { url, db } = useContext(FrappeContext) as FrappeConfig
 
-    const queryKey =
-        swrKey === undefined
-            ? ['frappe', doctype, args, `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}`]
-            : swrKey
+    const defaultQueryKey = ['frappe', doctype, args, `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}`]
+
     const query = useQuery<T[], Error>({
-        queryKey: queryKey as readonly unknown[],
+        queryKey: queryKey ?? defaultQueryKey,
         queryFn: () => db.getDocList<T, K>(doctype, args),
         ...options,
     })
+
     return {
         ...query,
+        data: query.data,
+        error: query.error,
         isValidating: query.isFetching,
         mutate: query.refetch,
     }
@@ -87,16 +101,24 @@ export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
  * Hook to prefetch a list of documents from the database
  * @param doctype - The doctype to fetch
  * @param args - The arguments to pass to the getDocList method
- * @param swrKey - The SWRKey to use for caching the result - optional
+ * @param queryKey - The queryKey to use for caching the result - optional
  * @returns A function to prefetch the list of documents
  */
-export const useFrappePrefetchDocList = <T = any>(doctype: string, args?: GetDocListArgs<T>, swrKey?: Key) => {
+export const useFrappePrefetchDocList = <T = any, K = FrappeDoc<T>>(
+    doctype: string,
+    args?: GetDocListArgs<K>,
+    queryKey?: readonly any[],
+) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
-    const key = swrKey === undefined ? `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}` : swrKey
+    const queryClient = useQueryClient()
+    const defaultQueryKey = ['frappe', doctype, args, `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}`]
 
     const preloadCall = useCallback(() => {
-        preload(key, () => db.getDocList<T>(doctype, args))
-    }, [key, doctype, args, db])
+        return queryClient.prefetchQuery({
+            queryKey: queryKey ?? defaultQueryKey,
+            queryFn: () => db.getDocList<T, K>(doctype, args),
+        })
+    }, [queryClient, queryKey, defaultQueryKey, doctype, args, db])
 
     return preloadCall
 }
@@ -118,43 +140,36 @@ export const useFrappeCreateDoc = <T = any>(): {
     reset: () => void
 } => {
     const { db } = useContext(FrappeContext) as FrappeConfig
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
     const [isCompleted, setIsCompleted] = useState(false)
 
-    const reset = useCallback(() => {
-        setLoading(false)
-        setError(null)
-        setIsCompleted(false)
-    }, [])
+    const mutation = useMutation<FrappeDoc<T>, Error, { doctype: string; doc: T }>({
+        mutationFn: ({ doctype, doc }) => db.createDoc<T>(doctype, doc),
+        onSuccess: () => {
+            setIsCompleted(true)
+        },
+        onError: () => {
+            setIsCompleted(false)
+        },
+    })
 
     const createDoc = useCallback(
         async (doctype: string, doc: T) => {
-            setError(null)
             setIsCompleted(false)
-            setLoading(true)
-
-            return db
-                .createDoc<T>(doctype, doc)
-                .then((document) => {
-                    setLoading(false)
-                    setIsCompleted(true)
-                    return document
-                })
-                .catch((error) => {
-                    setLoading(false)
-                    setIsCompleted(false)
-                    setError(error)
-                    throw error
-                })
+            const result = await mutation.mutateAsync({ doctype, doc })
+            return result
         },
-        [db],
+        [mutation],
     )
+
+    const reset = useCallback(() => {
+        mutation.reset()
+        setIsCompleted(false)
+    }, [mutation])
 
     return {
         createDoc,
-        loading,
-        error,
+        loading: mutation.isPending,
+        error: mutation.error,
         isCompleted,
         reset,
     }
@@ -171,50 +186,44 @@ export const useFrappeUpdateDoc = <T = any>(): {
     loading: boolean
     /** Error object returned from API call */
     error: Error | null | undefined
-    /** Will be true if document is created. Else false */
+    /** Will be true if document is updated. Else false */
     isCompleted: boolean
     /** Function to reset the state of the hook */
     reset: () => void
 } => {
     const { db } = useContext(FrappeContext) as FrappeConfig
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
     const [isCompleted, setIsCompleted] = useState(false)
 
-    const reset = useCallback(() => {
-        setLoading(false)
-        setError(null)
-        setIsCompleted(false)
-    }, [])
+    const mutation = useMutation<FrappeDoc<T>, Error, { doctype: string; docname: string | null; doc: Partial<T> }>({
+        mutationFn: ({ doctype, docname, doc }) => db.updateDoc<T>(doctype, docname, doc),
+        onSuccess: () => {
+            setIsCompleted(true)
+        },
+        onError: () => {
+            setIsCompleted(false)
+        },
+    })
 
     const updateDoc = useCallback(
         async (doctype: string, docname: string | null, doc: Partial<T>) => {
-            setError(null)
             setIsCompleted(false)
-            setLoading(true)
-            return db
-                .updateDoc<T>(doctype, docname, doc)
-                .then((document) => {
-                    setLoading(false)
-                    setIsCompleted(true)
-                    return document
-                })
-                .catch((error) => {
-                    setLoading(false)
-                    setIsCompleted(false)
-                    setError(error)
-                    throw error
-                })
+            const result = await mutation.mutateAsync({ doctype, docname, doc })
+            return result
         },
-        [db],
+        [mutation],
     )
+
+    const reset = useCallback(() => {
+        mutation.reset()
+        setIsCompleted(false)
+    }, [mutation])
 
     return {
         updateDoc,
-        loading,
-        error,
-        reset,
+        loading: mutation.isPending,
+        error: mutation.error,
         isCompleted,
+        reset,
     }
 }
 
@@ -229,51 +238,44 @@ export const useFrappeDeleteDoc = (): {
     loading: boolean
     /** Error object returned from API call */
     error: Error | null | undefined
-    /** Will be true if document is created. Else false */
+    /** Will be true if document is deleted. Else false */
     isCompleted: boolean
     /** Function to reset the state of the hook */
     reset: () => void
 } => {
     const { db } = useContext(FrappeContext) as FrappeConfig
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<Error | null>(null)
     const [isCompleted, setIsCompleted] = useState(false)
 
-    const reset = useCallback(() => {
-        setLoading(false)
-        setError(null)
-        setIsCompleted(false)
-    }, [])
+    const mutation = useMutation<{ message: string }, Error, { doctype: string; docname?: string | null }>({
+        mutationFn: ({ doctype, docname }) => db.deleteDoc(doctype, docname),
+        onSuccess: () => {
+            setIsCompleted(true)
+        },
+        onError: () => {
+            setIsCompleted(false)
+        },
+    })
 
     const deleteDoc = useCallback(
-        async (doctype: string, docname?: string | null): Promise<{ message: string }> => {
-            setError(null)
+        async (doctype: string, docname?: string | null) => {
             setIsCompleted(false)
-            setLoading(true)
-
-            return db
-                .deleteDoc(doctype, docname)
-                .then((message) => {
-                    setLoading(false)
-                    setIsCompleted(true)
-                    return message
-                })
-                .catch((error) => {
-                    setLoading(false)
-                    setIsCompleted(false)
-                    setError(error)
-                    throw error
-                })
+            const result = await mutation.mutateAsync({ doctype, docname })
+            return result
         },
-        [db],
+        [mutation],
     )
+
+    const reset = useCallback(() => {
+        mutation.reset()
+        setIsCompleted(false)
+    }, [mutation])
 
     return {
         deleteDoc,
-        loading,
-        error,
-        reset,
+        loading: mutation.isPending,
+        error: mutation.error,
         isCompleted,
+        reset,
     }
 }
 
@@ -284,33 +286,33 @@ export const useFrappeDeleteDoc = (): {
  * @param filters - filters to apply to the query
  * @param cache - Whether to cache the result or not. Defaults to false
  * @param debug - Whether to log debug messages or not. Defaults to false
- * @param options [Optional] SWRConfiguration options for fetching data
- * @returns an object (SWRResponse) with the following properties: data (number), error, isValidating, and mutate
+ * @param options [Optional] UseQueryOptions options for fetching data
+ * @returns an object with data (number), error, isValidating, and mutate properties
  */
 export const useFrappeGetDocCount = <T = any>(
     doctype: string,
     filters?: Filter<T>[],
     cache: boolean = false,
     debug: boolean = false,
-    swrKey?: Key,
-    options?: SWRConfiguration,
-): SWRResponse<number, Error> => {
-    const { url, db } = useContext(FrappeContext) as FrappeConfig
-    const getUniqueURLKey = () => {
-        const params = encodeQueryData(
-            cache
-                ? { doctype, filters: filters ?? [], cache, debug }
-                : { doctype, filters: filters ?? [], debug: debug },
-        )
-        return `${url}/api/method/frappe.client.get_count?${params}`
-    }
-    const swrResult = useSWR<number, Error>(
-        swrKey === undefined ? getUniqueURLKey() : swrKey,
-        () => db.getCount(doctype, filters, cache, debug),
-        options,
-    )
+    queryKey?: readonly any[],
+    options?: UseQueryOptions<number, Error>,
+) => {
+    const { db } = useContext(FrappeContext) as FrappeConfig
+    const defaultQueryKey = ['frappe', 'count', doctype, filters, cache, debug]
 
-    return swrResult
+    const query = useQuery<number, Error>({
+        queryKey: queryKey ?? defaultQueryKey,
+        queryFn: () => db.getCount(doctype, filters, cache, debug),
+        ...options,
+    })
+
+    return {
+        ...query,
+        data: query.data,
+        error: query.error,
+        isValidating: query.isFetching,
+        mutate: query.refetch,
+    }
 }
 
 /**
@@ -319,7 +321,7 @@ export const useFrappeGetDocCount = <T = any>(
  * @param filters - filters to apply to the query
  * @param cache - Whether to cache the result or not. Defaults to false
  * @param debug - Whether to log debug messages or not. Defaults to false
- * @param swrKey - The SWRKey to use for caching the result - optional
+ * @param queryKey - The queryKey to use for caching the result - optional
  * @returns A function to prefetch the number of documents
  */
 export const useFrappePrefetchDocCount = <T = any>(
@@ -327,20 +329,18 @@ export const useFrappePrefetchDocCount = <T = any>(
     filters?: Filter<T>[],
     cache: boolean = false,
     debug: boolean = false,
-    swrKey?: Key,
+    queryKey?: readonly any[],
 ) => {
-    const { db, url } = useContext(FrappeContext) as FrappeConfig
-    const key =
-        swrKey === undefined
-            ? `${url}/api/method/frappe.client.get_count?${encodeQueryData({
-                  doctype,
-                  filters: filters ?? [],
-                  cache,
-                  debug,
-              })}`
-            : swrKey
+    const { db } = useContext(FrappeContext) as FrappeConfig
+    const queryClient = useQueryClient()
+    const defaultQueryKey = ['frappe', 'count', doctype, filters, cache, debug]
+
     const preloadCall = useCallback(() => {
-        preload(key, () => db.getCount<T>(doctype, filters, false, false))
-    }, [key, doctype, filters, db])
+        return queryClient.prefetchQuery({
+            queryKey: queryKey ?? defaultQueryKey,
+            queryFn: () => db.getCount<T>(doctype, filters, cache, debug),
+        })
+    }, [queryClient, queryKey, defaultQueryKey, doctype, filters, cache, debug, db])
+
     return preloadCall
 }

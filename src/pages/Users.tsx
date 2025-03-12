@@ -1,6 +1,6 @@
 import { useFrappeGetDocList } from '../lib'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-
+import { Validate } from '../components/validate'
 interface User {
     name: string
     full_name: string
@@ -50,6 +50,7 @@ export function Users() {
 
     return (
         <div className="users-page">
+            <Validate />
             <h1>Users</h1>
             <div className="table-container">
                 <table>

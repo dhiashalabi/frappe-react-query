@@ -19,4 +19,4 @@ export {
     useFrappePutCall,
     useFrappeDeleteCall,
 } from './useAPI'
-export { useSearch } from './useSearch'
+export { useSearch, useValidateLink } from './useSearch'
