@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/mussnad/frappe-react-query/compare/v1.2.0...v1.2.1) (2025-03-12)
+
+### Bug Fixes
+
+- Publish package as public npm module ([d58c433](https://github.com/mussnad/frappe-react-query/commit/d58c433385b44390541725b14792ccea68185959))
+
 # [1.2.0](https://github.com/mussnad/frappe-react-query/compare/v1.1.0...v1.2.0) (2025-03-12)
 
 ### Features
