@@ -1,3 +1,9 @@
+# [1.2.0](https://github.com/mussnad/frappe-react-query/compare/v1.1.0...v1.2.0) (2025-03-12)
+
+### Features
+
+- Add semantic-release to package.json and update prepare script ([8214c9f](https://github.com/mussnad/frappe-react-query/commit/8214c9fab12f33d099211a8001977e984d7ac72f))
+
 # [1.1.0](https://github.com/mussnad/frappe-react-query/compare/v1.0.2...v1.1.0) (2025-03-12)
 
 ### Bug Fixes
