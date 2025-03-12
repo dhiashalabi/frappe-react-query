@@ -48,14 +48,14 @@ export const useFrappeGetDoc = <T = any>(
 export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, queryKey?: readonly any[]) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
     const queryClient = useQueryClient()
-    const defaultQueryKey = ['frappe', doctype, name, getRequestURL(doctype, url, name)]
 
     const preloadCall = useCallback(() => {
+        const defaultQueryKey = ['frappe', doctype, name, getRequestURL(doctype, url, name)]
         return queryClient.prefetchQuery({
             queryKey: queryKey ?? defaultQueryKey,
             queryFn: () => db.getDoc<T>(doctype, name),
         })
-    }, [queryClient, queryKey, defaultQueryKey, doctype, name, db])
+    }, [queryClient, queryKey, doctype, name, db, url])
 
     return preloadCall
 }
@@ -111,14 +111,19 @@ export const useFrappePrefetchDocList = <T = any, K = FrappeDoc<T>>(
 ) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
     const queryClient = useQueryClient()
-    const defaultQueryKey = ['frappe', doctype, args, `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}`]
 
     const preloadCall = useCallback(() => {
+        const defaultQueryKey = [
+            'frappe',
+            doctype,
+            args,
+            `${getRequestURL(doctype, url)}?${getDocListQueryString(args)}`,
+        ]
         return queryClient.prefetchQuery({
             queryKey: queryKey ?? defaultQueryKey,
             queryFn: () => db.getDocList<T, K>(doctype, args),
         })
-    }, [queryClient, queryKey, defaultQueryKey, doctype, args, db])
+    }, [queryClient, queryKey, doctype, args, db, url])
 
     return preloadCall
 }
@@ -333,14 +338,14 @@ export const useFrappePrefetchDocCount = <T = any>(
 ) => {
     const { db } = useContext(FrappeContext) as FrappeConfig
     const queryClient = useQueryClient()
-    const defaultQueryKey = ['frappe', 'count', doctype, filters, cache, debug]
 
     const preloadCall = useCallback(() => {
+        const defaultQueryKey = ['frappe', 'count', doctype, filters, cache, debug]
         return queryClient.prefetchQuery({
             queryKey: queryKey ?? defaultQueryKey,
             queryFn: () => db.getCount<T>(doctype, filters, cache, debug),
         })
-    }, [queryClient, queryKey, defaultQueryKey, doctype, filters, cache, debug, db])
+    }, [queryClient, queryKey, doctype, filters, cache, debug, db])
 
     return preloadCall
 }

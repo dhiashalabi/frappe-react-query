@@ -49,10 +49,9 @@ export const useFrappePrefetchCall = <T = any>(
 ) => {
     const { call } = useContext(FrappeContext) as FrappeConfig
     const queryClient = useQueryClient()
-    const urlParams = encodeQueryData(params ?? {})
-    const defaultKey = [method, urlParams]
 
     return useCallback(() => {
+        const defaultKey = [method, encodeQueryData(params ?? {})]
         queryClient.prefetchQuery({
             queryKey: queryKey || defaultKey,
             queryFn: () =>
@@ -60,7 +59,7 @@ export const useFrappePrefetchCall = <T = any>(
                     ? call.get<T>(method, params).then((res) => res.message)
                     : call.post<T>(method, params).then((res) => res.message),
         })
-    }, [method, params, queryKey, type, call, queryClient, defaultKey])
+    }, [method, params, queryKey, type, call, queryClient])
 }
 
 /**
