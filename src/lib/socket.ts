@@ -16,8 +16,7 @@ export class SocketIO {
     private port: string
     private protocol: string
     private url: string
-    // @ts-expect-error - site_name is optional
-    private site_name: string | undefined
+    // private site_name: string | undefined
     public socket: Socket
 
     constructor(url?: string, site_name?: string, socket_port?: string, tokenParams?: TokenParams) {
@@ -44,7 +43,7 @@ export class SocketIO {
         if (site_name) {
             this.url = `${this.url}${site_name}`
         }
-        this.site_name = site_name
+        // this.site_name = site_name
         this.socket = io(`${this.url}`, {
             withCredentials: true,
             secure: this.protocol === 'https',

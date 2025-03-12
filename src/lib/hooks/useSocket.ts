@@ -9,7 +9,6 @@ import { DocumentUpdateEventData, DocTypeListUpdateEventData, ViewerEventData, F
  * @example
  * ```typescript
  * useFrappeEventListener('my_event', (data) => {
- *     // do something with the data
  *      if(data.status === 'success') {
  *          console.log('success')
  *      }

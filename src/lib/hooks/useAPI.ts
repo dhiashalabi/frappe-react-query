@@ -39,7 +39,15 @@ export const useFrappeGetCall = <T = any>(
 }
 
 /**
- *  Hook to prefetch data
+ * Hook to prefetch data
+ *
+ * @param method - name of the method to call (will be dotted path e.g. "frappe.client.get_list")
+ * @param params - parameters to pass to the method
+ * @param queryKey - optional QueryKey that will be used to cache the result. If not provided, the method name with the URL params will be used as the key
+ * @param type - type of the request to make - defaults to GET
+ *
+ * @typeParam T - Type of the data returned by the method
+ * @returns an object with data, error, isLoading, and other React Query properties
  */
 export const useFrappePrefetchCall = <T = any>(
     method: string,
@@ -64,6 +72,12 @@ export const useFrappePrefetchCall = <T = any>(
 
 /**
  * Hook for POST requests
+ *
+ * @param method - name of the method to call (will be dotted path e.g. "frappe.client.get_list")
+ * @param params - parameters to pass to the method
+ *
+ * @typeParam T - Type of the data returned by the method
+ * @returns an object with data, error, isLoading, and other React Query properties
  */
 export const useFrappePostCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
@@ -83,6 +97,12 @@ export const useFrappePostCall = <T = any>(method: string) => {
 
 /**
  * Hook for PUT requests
+ *
+ * @param method - name of the method to call (will be dotted path e.g. "frappe.client.get_list")
+ * @param params - parameters to pass to the method
+ *
+ * @typeParam T - Type of the data returned by the method
+ * @returns an object with data, error, isLoading, and other React Query properties
  */
 export const useFrappePutCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
@@ -102,6 +122,12 @@ export const useFrappePutCall = <T = any>(method: string) => {
 
 /**
  * Hook for DELETE requests
+ *
+ * @param method - name of the method to call (will be dotted path e.g. "frappe.client.get_list")
+ * @param params - parameters to pass to the method
+ *
+ * @typeParam T - Type of the data returned by the method
+ * @returns an object with data, error, isLoading, and other React Query properties
  */
 export const useFrappeDeleteCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
