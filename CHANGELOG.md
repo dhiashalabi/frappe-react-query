@@ -1,3 +1,9 @@
+# [1.3.0](https://github.com/mussnad/frappe-react-query/compare/v1.2.1...v1.3.0) (2025-03-12)
+
+### Features
+
+- Update README with comprehensive documentation for Frappe React Query SDK ([41b063c](https://github.com/mussnad/frappe-react-query/commit/41b063cd8e792e81e15689370cccb0c753d68446))
+
 ## [1.2.1](https://github.com/mussnad/frappe-react-query/compare/v1.2.0...v1.2.1) (2025-03-12)
 
 ### Bug Fixes
