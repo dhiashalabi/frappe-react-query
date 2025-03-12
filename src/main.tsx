@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+import App from './App'
 import { FrappeProvider } from './lib'
 import './index.css'
 import { QueryClient } from '@tanstack/react-query'
