@@ -1,3 +1,9 @@
+## [1.3.1](https://github.com/mussnad/frappe-react-query/compare/v1.3.0...v1.3.1) (2025-03-12)
+
+### Bug Fixes
+
+- Enhance README with emoji and refined project description ([069239e](https://github.com/mussnad/frappe-react-query/commit/069239e0b2beb51886749668396bf5597b152a79))
+
 # [1.3.0](https://github.com/mussnad/frappe-react-query/compare/v1.2.1...v1.3.0) (2025-03-12)
 
 ### Features
