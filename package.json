@@ -18,19 +18,19 @@
     "bugs": {
         "url": "https://github.com/mussnad/frappe-react-query/issues"
     },
-    "main": "./dist/frappe-react-query.umd.js",
-    "types": "./dist/lib/types/index.d.ts",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "files": [
         "dist",
         "LICENSE",
         "README.md"
     ],
-    "module": "./dist/frappe-react-query.es.js",
+    "module": "./dist/index.mjs",
     "exports": {
         ".": {
-            "import": "./dist/frappe-react-query.es.js",
-            "require": "./dist/frappe-react-query.umd.js",
-            "types": "./dist/lib/types/index.d.ts"
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
         }
     },
     "scripts": {

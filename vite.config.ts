@@ -1,29 +1,23 @@
-import path from 'path'
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { resolve } from 'path'
 import dts from 'vite-plugin-dts'
 
 // https://vite.dev/config/
 export default defineConfig({
     build: {
         lib: {
-            entry: path.resolve(__dirname, 'src/lib/index.tsx'),
-            name: 'Frappe React Query',
-            fileName: (format) => `frappe-react-query.${format}.js`,
+            entry: resolve(__dirname, 'src/lib/index.tsx'),
+            formats: ['es', 'cjs'],
+            fileName: (format) => `index.${format === 'es' ? 'mjs' : 'js'}`,
         },
         rollupOptions: {
-            external: ['react', 'react-dom', 'react/jsx-runtime'],
-            output: {
-                globals: {
-                    react: 'React',
-                },
-            },
+            external: ['react', 'react-dom', '@tanstack/react-query', 'socket.io-client'],
         },
     },
     plugins: [
         dts({
-            insertTypesEntry: true,
+            include: ['src/lib'],
+            outDir: 'dist',
         }),
-        react(),
     ],
 })
