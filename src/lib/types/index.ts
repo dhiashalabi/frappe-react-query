@@ -11,7 +11,6 @@ import {
     OTPCredentials,
     UserPassCredentials,
 } from '@mussnad/frappe-js-client/dist/auth/types'
-import { SWRConfiguration, SWRResponse, Key } from 'swr'
 
 export type {
     OTPCredentials,
@@ -23,9 +22,6 @@ export type {
     Filter,
     FileArgs,
     Error as FrappeError,
-    SWRConfiguration,
-    SWRResponse,
-    Key,
 }
 
 export interface FrappeConfig {

@@ -16,7 +16,7 @@ export const useFrappeAuth = (
     currentUser: string | null | undefined
     /** Will be true when the hook is fetching user data  */
     isLoading: boolean
-    /** Will be true when the hook is fetching (or revalidating) the user state. (Refer to isValidating in useSWR)  */
+    /** Will be true when the hook is fetching (or revalidating) the user state. */
     isValidating: boolean
     /** Error object returned from API call */
     error: Error | null | undefined
