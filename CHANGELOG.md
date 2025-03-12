@@ -1,3 +1,13 @@
+# [1.4.0](https://github.com/mussnad/frappe-react-query/compare/v1.3.1...v1.4.0) (2025-03-12)
+
+### Bug Fixes
+
+- Update dependencies in yarn.lock to latest versions for Babel and axios ([17e1d8c](https://github.com/mussnad/frappe-react-query/commit/17e1d8c651acb19566e10ea6d54ab5a8f348084f))
+
+### Features
+
+- Update package.json and vite.config.ts for improved build configuration and file structure ([910b5f1](https://github.com/mussnad/frappe-react-query/commit/910b5f1724c362ada0bdafb968c9c31f4e9490f8))
+
 ## [1.3.1](https://github.com/mussnad/frappe-react-query/compare/v1.3.0...v1.3.1) (2025-03-12)
 
 ### Bug Fixes
