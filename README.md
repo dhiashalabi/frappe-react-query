@@ -1,6 +1,6 @@
-# @mussnad/frappe-react-query
+# Frappe React Query 📦
 
-A powerful React Query SDK for Frappe Framework, providing seamless integration between React applications and Frappe backend services.
+A powerful React Query package for Frappe Framework, providing seamless integration between React applications and Frappe backend services.
 
 [![npm version](https://badge.fury.io/js/@mussnad%2Ffrappe-react-query.svg)](https://badge.fury.io/js/@mussnad%2Ffrappe-react-query)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
