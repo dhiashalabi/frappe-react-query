@@ -4,6 +4,7 @@
     "description": "A React Query SDK for Frappe",
     "author": "Mussnad",
     "license": "MIT",
+    "type": "module",
     "keywords": [
         "Frappe",
         "React",
