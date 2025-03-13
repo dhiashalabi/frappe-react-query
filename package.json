@@ -5,10 +5,11 @@
     "author": "Mussnad",
     "license": "MIT",
     "keywords": [
-        "frappe",
-        "react",
-        "react-query",
-        "sdk"
+        "Frappe",
+        "React",
+        "React Query",
+        "SDK",
+        "hooks"
     ],
     "homepage": "https://github.com/mussnad/frappe-react-query#readme",
     "repository": {
