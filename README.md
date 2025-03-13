@@ -75,7 +75,7 @@ function UserProfile() {
 Fetch a single document from the database.
 
 ```tsx
-const { data, error, isValidating, mutate } = useFrappeGetDoc<T>(
+const { data, error, isFetching, mutate } = useFrappeGetDoc<T>(
   doctype: string,
   name?: string,
   queryKey?: readonly any[],
@@ -88,7 +88,7 @@ const { data, error, isValidating, mutate } = useFrappeGetDoc<T>(
 Fetch a list of documents with filtering and pagination.
 
 ```tsx
-const { data, error, isValidating, mutate } = useFrappeGetDocList<T>(
+const { data, error, isFetching, mutate } = useFrappeGetDocList<T>(
   doctype: string,
   args?: GetDocListArgs<T>,
   queryKey?: readonly any[],
@@ -139,7 +139,7 @@ Manage authentication state and operations.
 const {
   currentUser,
   isLoading,
-  isValidating,
+  isFetching,
   error,
   login,
   logout,
