@@ -1,6 +1,6 @@
 {
     "name": "@mussnad/frappe-react-query",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "A React Query SDK for Frappe",
     "author": "Mussnad",
     "license": "MIT",
