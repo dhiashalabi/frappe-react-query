@@ -15,6 +15,7 @@ import { ApiParams } from '@mussnad/frappe-js-client'
  * @param type - type of the request to make - defaults to GET
  *
  * @typeParam T - Type of the data returned by the method
+ *
  * @returns an object with data, error, isLoading, and other React Query properties
  *
  * @example
@@ -54,6 +55,7 @@ export const useFrappeGetCall = <T = any>(
  * @param type - type of the request to make - defaults to GET
  *
  * @typeParam T - Type of the data returned by the method
+ *
  * @returns an object with data, error, isLoading, and other React Query properties
  *
  * @example
@@ -91,6 +93,7 @@ export const useFrappePrefetchCall = <T = any>(
  * @param params - parameters to pass to the method
  *
  * @typeParam T - Type of the data returned by the method
+ *
  * @returns an object with data, error, isLoading, and other React Query properties
  *
  * @example
@@ -123,6 +126,7 @@ export const useFrappePostCall = <T = any>(method: string) => {
  * @param params - parameters to pass to the method
  *
  * @typeParam T - Type of the data returned by the method
+ *
  * @returns an object with data, error, isLoading, and other React Query properties
  *
  * @example
@@ -155,6 +159,7 @@ export const useFrappePutCall = <T = any>(method: string) => {
  * @param params - parameters to pass to the method
  *
  * @typeParam T - Type of the data returned by the method
+ *
  * @returns an object with data, error, isLoading, and other React Query properties
  *
  * @example

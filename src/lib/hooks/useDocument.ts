@@ -9,7 +9,9 @@ import { useQuery, UseQueryOptions, useQueryClient, useMutation } from '@tanstac
  *
  * @param doctype - The doctype to fetch
  * @param name - the name of the document to fetch
+ * @param queryKey - The queryKey to use for caching the result - optional
  * @param options [Optional] UseQueryOptions options for fetching data
+ *
  * @returns an object with the following properties: data, error, isFetching, and mutate
  *
  * @typeParam T - The type of the document
@@ -47,6 +49,7 @@ export const useFrappeGetDoc = <T = any>(
  * @param doctype - The doctype to fetch
  * @param name - The name of the document to fetch
  * @param queryKey - The queryKey to use for caching the result - optional
+ *
  * @returns A function to prefetch the document
  *
  * @example
@@ -75,6 +78,7 @@ export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, qu
  * @param args Arguments to pass (filters, pagination, etc)
  * @param queryKey Optional query key for caching
  * @param options [Optional] UseQueryOptions for React Query
+ *
  * @returns an object with data, error, isFetching, and mutate properties
  *
  * @typeParam T - The type definition of the document object
@@ -114,6 +118,7 @@ export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
  * @param doctype - The doctype to fetch
  * @param args - The arguments to pass to the getDocList method
  * @param queryKey - The queryKey to use for caching the result - optional
+ *
  * @returns A function to prefetch the list of documents
  *
  * @example
@@ -319,7 +324,9 @@ export const useFrappeDeleteDoc = (): {
  * @param filters - filters to apply to the query
  * @param cache - Whether to cache the result or not. Defaults to false
  * @param debug - Whether to log debug messages or not. Defaults to false
+ * @param queryKey - The queryKey to use for caching the result - optional
  * @param options [Optional] UseQueryOptions options for fetching data
+ *
  * @returns an object with data (number), error, isFetching, and mutate properties
  *
  * @example
@@ -359,6 +366,7 @@ export const useFrappeGetDocCount = <T = any>(
  * @param cache - Whether to cache the result or not. Defaults to false
  * @param debug - Whether to log debug messages or not. Defaults to false
  * @param queryKey - The queryKey to use for caching the result - optional
+ *
  * @returns A function to prefetch the number of documents
  *
  * @example

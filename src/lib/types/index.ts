@@ -85,7 +85,7 @@ export interface DocTypeListUpdateEventData {
 }
 
 export interface FrappeFileUploadResponse {
-    /** Name of the file documnet in the database */
+    /** Name of the file document in the database */
     name: string
     owner: string
     creation: string

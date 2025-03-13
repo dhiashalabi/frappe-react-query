@@ -9,6 +9,8 @@ import type { FrappeConfig, ValidateLinkResponse } from '../types'
  * @param docname - the name of the document
  * @param fields - the fields to validate
  *
+ * @returns Returns an object with the following properties: data, error, isFetching, mutate
+ *
  * @example
  *
  * const { data, error, isFetching, mutate } = useValidateLink('DocType', 'name', ['field1', 'field2'])

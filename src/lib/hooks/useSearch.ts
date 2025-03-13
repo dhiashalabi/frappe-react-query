@@ -7,10 +7,6 @@ import { FrappeContext } from '../context/FrappeContext'
 import type { FrappeConfig } from '../types'
 
 /**
- * Type for validate link response with dynamic fields
- */
-
-/**
  * Hook to search for documents - only works with Frappe v15+
  *
  * @param doctype - name of the doctype (table) where we are performing our search
@@ -18,7 +14,8 @@ import type { FrappeConfig } from '../types'
  * @param filters - (optional) the results will be filtered based on these
  * @param limit - (optional) the number of results to return. Defaults to 20
  * @param debounce - (optional) the number of milliseconds to wait before making the API call. Defaults to 250ms.
- * @returns result - array of type SearchResult with a list of suggestions based on search text
+ *
+ * @returns Returns an object with the following properties: data, error, isFetching, mutate
  *
  * @example
  *
@@ -60,6 +57,7 @@ export const useSearch = (
  * Hook to debounce user input
  * @param value - the value to be debounced
  * @param delay - the number of milliseconds to wait before returning the value
+ *
  * @returns string value after the specified delay
  */
 const useDebounce = (value: string, delay: number) => {
