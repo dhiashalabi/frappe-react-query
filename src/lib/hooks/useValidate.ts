@@ -8,6 +8,10 @@ import type { FrappeConfig, ValidateLinkResponse } from '../types'
  * @param doctype - the doctype of the document
  * @param docname - the name of the document
  * @param fields - the fields to validate
+ *
+ * @example
+ *
+ * const { data, error, isFetching, mutate } = useValidateLink('DocType', 'name', ['field1', 'field2'])
  */
 export const useValidateLink = <T extends string[]>(doctype: string, docname: string, fields: T) => {
     const { call } = useContext(FrappeContext) as FrappeConfig
@@ -21,7 +25,7 @@ export const useValidateLink = <T extends string[]>(doctype: string, docname: st
         ...query,
         data: query.data,
         error: query.error,
-        isValidating: query.isFetching,
+        isFetching: query.isFetching,
         mutate: query.refetch,
     }
 }
