@@ -34,6 +34,15 @@ export interface FrappeConfig {
     call: FrappeCall
     file: FrappeFileUpload
     socket?: Socket
+    /** Whether to sync user authentication in realtime */
+    realtimeUserAuthSync?: boolean
+}
+
+export interface FrappeAuthConfig {
+    /** Whether to sync user authentication in realtime */
+    realtimeUserValidation?: boolean
+    /** Method to check if user is authenticated */
+    userCheckMethod?: string
 }
 
 export interface TokenParams {
@@ -51,7 +60,7 @@ export interface SearchResult {
     description: string
 }
 
-export interface ValidateLinkResponse<T extends string[]> {
+export interface ValidateLinkResponse<T extends readonly string[]> {
     message: {
         [K in T[number]]: string
     }
