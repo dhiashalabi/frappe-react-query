@@ -16,6 +16,13 @@ import { ApiParams } from '@mussnad/frappe-js-client'
  *
  * @typeParam T - Type of the data returned by the method
  * @returns an object with data, error, isLoading, and other React Query properties
+ *
+ * @example
+ *
+ * const { data, error, isLoading } = useFrappeGetCall('frappe.client.get_list', {
+ *     filters: [{ field: 'name', operator: 'like', value: 'test' }],
+ *     fields: ['name', 'title'],
+ * })
  */
 export const useFrappeGetCall = <T = any>(
     method: string,
@@ -48,6 +55,13 @@ export const useFrappeGetCall = <T = any>(
  *
  * @typeParam T - Type of the data returned by the method
  * @returns an object with data, error, isLoading, and other React Query properties
+ *
+ * @example
+ *
+ * const prefetch = useFrappePrefetchCall('frappe.client.get_list', {
+ *     filters: [{ field: 'name', operator: 'like', value: 'test' }],
+ *     fields: ['name', 'title'],
+ * })
  */
 export const useFrappePrefetchCall = <T = any>(
     method: string,
@@ -78,6 +92,13 @@ export const useFrappePrefetchCall = <T = any>(
  *
  * @typeParam T - Type of the data returned by the method
  * @returns an object with data, error, isLoading, and other React Query properties
+ *
+ * @example
+ *
+ * const { data, error, isLoading } = useFrappePostCall('frappe.client.get_list', {
+ *     filters: [{ field: 'name', operator: 'like', value: 'test' }],
+ *     fields: ['name', 'title'],
+ * })
  */
 export const useFrappePostCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
@@ -103,6 +124,13 @@ export const useFrappePostCall = <T = any>(method: string) => {
  *
  * @typeParam T - Type of the data returned by the method
  * @returns an object with data, error, isLoading, and other React Query properties
+ *
+ * @example
+ *
+ * const { data, error, isLoading } = useFrappePutCall('frappe.client.get_list', {
+ *     filters: [{ field: 'name', operator: 'like', value: 'test' }],
+ *     fields: ['name', 'title'],
+ * })
  */
 export const useFrappePutCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
@@ -128,6 +156,13 @@ export const useFrappePutCall = <T = any>(method: string) => {
  *
  * @typeParam T - Type of the data returned by the method
  * @returns an object with data, error, isLoading, and other React Query properties
+ *
+ * @example
+ *
+ * const { data, error, isLoading } = useFrappeDeleteCall('frappe.client.get_list', {
+ *     filters: [{ field: 'name', operator: 'like', value: 'test' }],
+ *     fields: ['name', 'title'],
+ * })
  */
 export const useFrappeDeleteCall = <T = any>(method: string) => {
     const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
