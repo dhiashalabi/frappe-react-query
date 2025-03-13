@@ -23,7 +23,7 @@ import type { FrappeConfig } from '../types'
  * @example
  *
  * const [searchText, setSearchText] = useState("")
- * const { data, error, isLoading, mutate } = useSearch("User", searchText)
+ * const { data, error, isFetching, mutate } = useSearch("User", searchText)
  */
 export const useSearch = (
     doctype: string,
@@ -51,7 +51,7 @@ export const useSearch = (
         ...query,
         data: query.data,
         error: query.error,
-        isValidating: query.isFetching,
+        isFetching: query.isFetching,
         mutate: query.refetch,
     }
 }
