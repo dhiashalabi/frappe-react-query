@@ -3,8 +3,13 @@ import { Socket } from 'socket.io-client'
 import { TokenParams } from '.'
 
 /** Socket class
+ * @param socket_port [Optional] socket port to connect to
+ * @param host [Optional] host to connect to
+ * @param port [Optional] port to connect to
+ * @param protocol [Optional] protocol to connect to
  * @param url [Optional] url to connect to
- * @param socket_port [Optional] port to connect to
+ * @param socket_port [Optional] socket port to connect to
+ *
  * @returns socket object
  *
  * if url is not provided, it will be set to the current host and require socket_port
@@ -19,6 +24,12 @@ export class SocketIO {
     // private site_name: string | undefined
     public socket: Socket
 
+    /**
+     * @param url [Optional] url to connect to
+     * @param site_name [Optional] site name to connect to
+     * @param socket_port [Optional] socket port to connect to
+     * @param tokenParams [Optional] token parameters
+     */
     constructor(url?: string, site_name?: string, socket_port?: string, tokenParams?: TokenParams) {
         this.socket_port = socket_port ?? '9000'
         this.host = window.location?.hostname

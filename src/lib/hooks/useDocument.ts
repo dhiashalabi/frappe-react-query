@@ -9,10 +9,16 @@ import { useQuery, UseQueryOptions, useQueryClient, useMutation } from '@tanstac
  *
  * @param doctype - The doctype to fetch
  * @param name - the name of the document to fetch
+ * @param queryKey - The queryKey to use for caching the result - optional
  * @param options [Optional] UseQueryOptions options for fetching data
- * @returns an object with the following properties: data, error, isValidating, and mutate
+ *
+ * @returns an object with the following properties: data, error, isFetching, and mutate
  *
  * @typeParam T - The type of the document
+ *
+ * @example
+ *
+ * const { data, error, isFetching, mutate } = useFrappeGetDoc('DocType', 'name')
  */
 export const useFrappeGetDoc = <T = any>(
     doctype: string,
@@ -33,7 +39,7 @@ export const useFrappeGetDoc = <T = any>(
         ...query,
         data: query.data,
         error: query.error,
-        isValidating: query.isFetching,
+        isFetching: query.isFetching,
         mutate: query.refetch,
     }
 }
@@ -43,7 +49,12 @@ export const useFrappeGetDoc = <T = any>(
  * @param doctype - The doctype to fetch
  * @param name - The name of the document to fetch
  * @param queryKey - The queryKey to use for caching the result - optional
+ *
  * @returns A function to prefetch the document
+ *
+ * @example
+ *
+ * const prefetch = useFrappePrefetchDoc('DocType', 'name')
  */
 export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, queryKey?: readonly any[]) => {
     const { db, url } = useContext(FrappeContext) as FrappeConfig
@@ -67,10 +78,15 @@ export const useFrappePrefetchDoc = <T = any>(doctype: string, name?: string, qu
  * @param args Arguments to pass (filters, pagination, etc)
  * @param queryKey Optional query key for caching
  * @param options [Optional] UseQueryOptions for React Query
- * @returns an object with data, error, isValidating, and mutate properties
+ *
+ * @returns an object with data, error, isFetching, and mutate properties
  *
  * @typeParam T - The type definition of the document object
  * @typeParam K - The type of the document for args
+ *
+ * @example
+ *
+ * const { data, error, isFetching, mutate } = useFrappeGetDocList('DocType', { filters: [{ field: 'name', operator: 'like', value: 'test' }] })
  */
 export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
     doctype: string,
@@ -92,7 +108,7 @@ export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
         ...query,
         data: query.data,
         error: query.error,
-        isValidating: query.isFetching,
+        isFetching: query.isFetching,
         mutate: query.refetch,
     }
 }
@@ -102,7 +118,12 @@ export const useFrappeGetDocList = <T = any, K = FrappeDoc<T>>(
  * @param doctype - The doctype to fetch
  * @param args - The arguments to pass to the getDocList method
  * @param queryKey - The queryKey to use for caching the result - optional
+ *
  * @returns A function to prefetch the list of documents
+ *
+ * @example
+ *
+ * const prefetch = useFrappePrefetchDocList('DocType', { filters: [{ field: 'name', operator: 'like', value: 'test' }] })
  */
 export const useFrappePrefetchDocList = <T = any, K = FrappeDoc<T>>(
     doctype: string,
@@ -131,6 +152,10 @@ export const useFrappePrefetchDocList = <T = any, K = FrappeDoc<T>>(
 /**
  * Hook to create a document in the database and maintain loading and error states
  * @returns Object with the following properties: loading, error, isCompleted and createDoc and reset functions
+ *
+ * @example
+ *
+ * const { createDoc, loading, error, isCompleted, reset } = useFrappeCreateDoc()
  */
 export const useFrappeCreateDoc = <T = any>(): {
     /** Function to create a document in the database */
@@ -183,6 +208,10 @@ export const useFrappeCreateDoc = <T = any>(): {
 /**
  * Hook to update a document in the database and maintain loading and error states
  * @returns Object with the following properties: loading, error, isCompleted and updateDoc and reset functions
+ *
+ * @example
+ *
+ * const { updateDoc, loading, error, isCompleted, reset } = useFrappeUpdateDoc()
  */
 export const useFrappeUpdateDoc = <T = any>(): {
     /** Function to update a document in the database */
@@ -235,6 +264,10 @@ export const useFrappeUpdateDoc = <T = any>(): {
 /**
  * Hook to delete a document in the database and maintain loading and error states
  * @returns Object with the following properties: loading, error, isCompleted and deleteDoc and reset functions
+ *
+ * @example
+ *
+ * const { deleteDoc, loading, error, isCompleted, reset } = useFrappeDeleteDoc()
  */
 export const useFrappeDeleteDoc = (): {
     /** Function to delete a document in the database. Returns a promise which resolves to an object with message "ok" if successful */
@@ -291,8 +324,14 @@ export const useFrappeDeleteDoc = (): {
  * @param filters - filters to apply to the query
  * @param cache - Whether to cache the result or not. Defaults to false
  * @param debug - Whether to log debug messages or not. Defaults to false
+ * @param queryKey - The queryKey to use for caching the result - optional
  * @param options [Optional] UseQueryOptions options for fetching data
- * @returns an object with data (number), error, isValidating, and mutate properties
+ *
+ * @returns an object with data (number), error, isFetching, and mutate properties
+ *
+ * @example
+ *
+ * const { data, error, isFetching, mutate } = useFrappeGetDocCount('DocType', { filters: [{ field: 'name', operator: 'like', value: 'test' }] })
  */
 export const useFrappeGetDocCount = <T = any>(
     doctype: string,
@@ -315,7 +354,7 @@ export const useFrappeGetDocCount = <T = any>(
         ...query,
         data: query.data,
         error: query.error,
-        isValidating: query.isFetching,
+        isFetching: query.isFetching,
         mutate: query.refetch,
     }
 }
@@ -327,7 +366,12 @@ export const useFrappeGetDocCount = <T = any>(
  * @param cache - Whether to cache the result or not. Defaults to false
  * @param debug - Whether to log debug messages or not. Defaults to false
  * @param queryKey - The queryKey to use for caching the result - optional
+ *
  * @returns A function to prefetch the number of documents
+ *
+ * @example
+ *
+ * const prefetch = useFrappePrefetchDocCount('DocType', { filters: [{ field: 'name', operator: 'like', value: 'test' }] })
  */
 export const useFrappePrefetchDocCount = <T = any>(
     doctype: string,

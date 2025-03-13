@@ -19,7 +19,7 @@ createRoot(rootElement).render(
     <StrictMode>
         <FrappeProvider
             url="http://dev.localhost:8000"
-            enableSocket={false}
+            socketPort="9000"
             queryClient={queryClient}
         >
             <App />

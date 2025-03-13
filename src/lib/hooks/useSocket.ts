@@ -41,7 +41,14 @@ export const useFrappeEventListener = <T = any>(eventName: string, callback: (ev
  * @param docname Name of the document
  * @param emitOpenCloseEventsOnMount [Optional] If true, the hook will emit doc_open and doc_close events on mount and unmount respectively. Defaults to true.
  * @param onUpdateCallback Function to be called when the document is updated. It is recommended to memoize this function.
- * @returns viewers - array of userID's, emitDocOpen - function to emit doc_open event, emitDocClose - function to emit doc_close event
+ *
+ * @returns Returns an object with the following properties: viewers - array of userID's, emitDocOpen - function to emit doc_open event, emitDocClose - function to emit doc_close event
+ *
+ * @example
+ *
+ * const { viewers, emitDocOpen, emitDocClose } = useFrappeDocumentEventListener('DocType', 'name', (data) => {
+ *      console.log(data)
+ * })
  */
 export const useFrappeDocumentEventListener = (
     doctype: string,
@@ -122,6 +129,10 @@ export const useFrappeDocumentEventListener = (
  *
  * @param doctype Name of the doctype
  * @param onListUpdateCallback Function to be called when the document is updated. It is recommended to memoize this function.
+ *
+ * @example
+ *
+ * const { data, error, isFetching, mutate } = useFrappeGetDocCount('DocType', { filters: [{ field: 'name', operator: 'like', value: 'test' }] })
  */
 export const useFrappeDocTypeEventListener = (
     doctype: string,

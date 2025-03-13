@@ -1,3 +1,6 @@
+import { TokenParams } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { Socket } from 'socket.io-client'
+
 declare module 'socket.io-client/dist/socket.io' {
     export class SocketIO {
         private socket_port: string | undefined

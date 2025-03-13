@@ -12,7 +12,7 @@ type FrappeProviderProps = PropsWithChildren<{
     url?: string
     /** Token parameters to be used for authentication
      *
-     * Only needed for token based authentication */
+     * Only needed for token-based authentication */
     tokenParams?: TokenParams
     /** Port on which Socket is running. Only meant for local development. Set to undefined on production. */
     socketPort?: string
@@ -25,7 +25,7 @@ type FrappeProviderProps = PropsWithChildren<{
     /** QueryClient options - these will be applied globally unless overridden */
     queryClient?: QueryClient
     /** Custom Headers to be passed in each request */
-    customHeaders?: object
+    customHeaders?: Record<string, string>
 }>
 
 export const FrappeProvider = ({
@@ -43,7 +43,6 @@ export const FrappeProvider = ({
     const client = queryClient || defaultQueryClient
 
     const frappeConfig: FrappeConfig = useMemo(() => {
-        //Add your Frappe backend's URL
         const frappe = new FrappeApp(url, tokenParams, undefined, customHeaders)
 
         return {
