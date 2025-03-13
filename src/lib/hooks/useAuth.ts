@@ -64,7 +64,7 @@ export const useFrappeAuth = (
         }
     }, [getUserCookie, tokenParams])
 
-    const queryKey = useMemo(() => ['logged-user'], [userID, tokenParams, configs?.realtimeUserValidation])
+    const queryKey = useMemo(() => ['logged-user'], [])
 
     const {
         data: currentUser,
