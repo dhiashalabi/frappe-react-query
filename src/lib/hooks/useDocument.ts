@@ -336,8 +336,8 @@ export const useFrappeDeleteDoc = (): {
 export const useFrappeGetDocCount = <T = any>(
     doctype: string,
     filters?: Filter<T>[],
-    cache: boolean = false,
-    debug: boolean = false,
+    cache = false,
+    debug = false,
     queryKey?: readonly any[],
     options?: UseQueryOptions<number, Error>,
 ) => {
@@ -376,8 +376,8 @@ export const useFrappeGetDocCount = <T = any>(
 export const useFrappePrefetchDocCount = <T = any>(
     doctype: string,
     filters?: Filter<T>[],
-    cache: boolean = false,
-    debug: boolean = false,
+    cache = false,
+    debug = false,
     queryKey?: readonly any[],
 ) => {
     const { db } = useContext(FrappeContext) as FrappeConfig

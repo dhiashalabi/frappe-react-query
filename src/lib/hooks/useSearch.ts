@@ -26,8 +26,8 @@ export const useSearch = (
     doctype: string,
     text: string,
     filters: Filter[] = [],
-    limit: number = 20,
-    debounce: number = 250,
+    limit = 20,
+    debounce = 250,
 ) => {
     const debouncedText = useDebounce(text, debounce)
     const { call } = useContext(FrappeContext) as FrappeConfig
