@@ -22,13 +22,7 @@ import type { FrappeConfig } from '../types'
  * const [searchText, setSearchText] = useState("")
  * const { data, error, isFetching, mutate } = useSearch("User", searchText)
  */
-export const useSearch = (
-    doctype: string,
-    text: string,
-    filters: Filter[] = [],
-    limit = 20,
-    debounce = 250,
-) => {
+export const useSearch = (doctype: string, text: string, filters: Filter[] = [], limit = 20, debounce = 250) => {
     const debouncedText = useDebounce(text, debounce)
     const { call } = useContext(FrappeContext) as FrappeConfig
 
