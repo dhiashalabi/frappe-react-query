@@ -7,14 +7,14 @@ A powerful React Query package for Frappe Framework, providing seamless integrat
 
 ## Features
 
-- 🔄 Real-time data synchronization with Frappe backend
-- 🎣 Custom React hooks for common Frappe operations
-- 🔍 Built-in search functionality
-- 📝 Document CRUD operations
-- 🔐 Authentication management
-- 📁 File upload capabilities
-- 🌐 Socket.io integration
-- 🚀 Built on top of @tanstack/react-query
+-   🔄 Real-time data synchronization with Frappe backend
+-   🎣 Custom React hooks for common Frappe operations
+-   🔍 Built-in search functionality
+-   📝 Document CRUD operations
+-   🔐 Authentication management
+-   📁 File upload capabilities
+-   🌐 Socket.io integration
+-   🚀 Built on top of @tanstack/react-query
 
 ## Installation
 
@@ -30,10 +30,10 @@ pnpm add @mussnad/frappe-react-query
 
 The package requires the following peer dependencies:
 
-- React ^19.0.0
-- React DOM ^19.0.0
-- @tanstack/react-query ^5.67.3
-- socket.io-client ^4.8.1
+-   React ^19.0.0
+-   React DOM ^19.0.0
+-   @tanstack/react-query ^5.67.3
+-   socket.io-client ^4.8.1
 
 ## Quick Start
 
@@ -706,15 +706,15 @@ function TaskManager() {
 
 This expanded documentation provides concrete, real-world examples that demonstrate how to:
 
-- Combine multiple hooks
-- Handle loading and error states
-- Implement TypeScript interfaces
-- Create reusable components
-- Manage complex state
-- Implement search and filtering
-- Handle file uploads
-- Manage authentication
-- Make custom API calls
+-   Combine multiple hooks
+-   Handle loading and error states
+-   Implement TypeScript interfaces
+-   Create reusable components
+-   Manage complex state
+-   Implement search and filtering
+-   Handle file uploads
+-   Manage authentication
+-   Make custom API calls
 
 Each example includes proper error handling, loading states, and TypeScript support where applicable.
 
