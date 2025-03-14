@@ -57,7 +57,7 @@ export const useFrappeAuth = (
 
     useEffect(() => {
         //Only get user cookie if token is not used and userID is not set
-        if (tokenParams && tokenParams.useToken) {
+        if (tokenParams?.useToken) {
             setUserID(null)
         } else {
             getUserCookie()
