@@ -1,9 +1,9 @@
 import { useCallback, useContext } from 'react'
 import { useQuery, useMutation, useQueryClient, QueryKey } from '@tanstack/react-query'
 import { FrappeContext } from '../context/FrappeContext'
-import { FrappeError as Error, FrappeConfig } from '../types'
+import { FrappeError } from '../types'
 import { encodeQueryData } from '../utils'
-import { ApiParams } from '@mussnad/frappe-js-client'
+import { ApiParams } from '@mussnad/frappe-js-client/dist/call/types'
 
 /**
  *  Hook to make a GET request to the server
@@ -32,7 +32,7 @@ export const useFrappeGetCall = <T = any>(
     options?: any,
     type: 'GET' | 'POST' = 'GET',
 ) => {
-    const { call } = useContext(FrappeContext) as FrappeConfig
+    const { call } = useContext(FrappeContext)
     const urlParams = encodeQueryData(params ?? {})
     const defaultKey = [method, urlParams]
 
@@ -71,7 +71,7 @@ export const useFrappePrefetchCall = <T = any>(
     queryKey?: QueryKey,
     type: 'GET' | 'POST' = 'GET',
 ) => {
-    const { call } = useContext(FrappeContext) as FrappeConfig
+    const { call } = useContext(FrappeContext)
     const queryClient = useQueryClient()
 
     return useCallback(() => {
@@ -104,8 +104,8 @@ export const useFrappePrefetchCall = <T = any>(
  * })
  */
 export const useFrappePostCall = <T = any>(method: string) => {
-    const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
-    const mutation = useMutation<T, Error, ApiParams>({
+    const { call: frappeCall } = useContext(FrappeContext)
+    const mutation = useMutation<T, FrappeError, ApiParams>({
         mutationFn: (params) => frappeCall.post<T>(method, params).then((res) => res.message),
     })
 
@@ -137,8 +137,8 @@ export const useFrappePostCall = <T = any>(method: string) => {
  * })
  */
 export const useFrappePutCall = <T = any>(method: string) => {
-    const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
-    const mutation = useMutation<T, Error, ApiParams>({
+    const { call: frappeCall } = useContext(FrappeContext)
+    const mutation = useMutation<T, FrappeError, ApiParams>({
         mutationFn: (params) => frappeCall.put<T>(method, params).then((res) => res.message),
     })
 
@@ -170,8 +170,8 @@ export const useFrappePutCall = <T = any>(method: string) => {
  * })
  */
 export const useFrappeDeleteCall = <T = any>(method: string) => {
-    const { call: frappeCall } = useContext(FrappeContext) as FrappeConfig
-    const mutation = useMutation<T, Error, ApiParams>({
+    const { call: frappeCall } = useContext(FrappeContext)
+    const mutation = useMutation<T, FrappeError, ApiParams>({
         mutationFn: (params) => frappeCall.delete<T>(method, params).then((res) => res.message),
     })
 
