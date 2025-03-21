@@ -1,3 +1,4 @@
+import { GetCountArgs } from '@mussnad/frappe-js-client/dist/client/types'
 import { FrappeDoc, GetDocListArgs } from '../types'
 
 export const getRequestURL = (doctype: string, url: string, docname?: string | null): string => {
@@ -52,6 +53,27 @@ export const getDocListQueryString = (args?: GetDocListArgs<FrappeDoc<any>>): st
     /** Fetch documents as a dictionary */
     if (args?.asDict) {
         queryString += 'as_dict=' + args.asDict
+    }
+
+    return queryString
+}
+
+export const getDocCountQueryString = (args?: GetCountArgs<any>): string => {
+    let queryString = ''
+
+    /** Filters to be applied - SQL AND operation */
+    if (args?.filters) {
+        queryString += 'filters=' + JSON.stringify(args?.filters) + '&'
+    }
+
+    /** Debug mode */
+    if (args?.debug) {
+        queryString += 'debug=' + args.debug
+    }
+
+    /** Cache the result */
+    if (args?.cache) {
+        queryString += 'cache=' + args.cache
     }
 
     return queryString
