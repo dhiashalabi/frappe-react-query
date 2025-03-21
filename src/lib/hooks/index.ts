@@ -10,6 +10,7 @@ export {
     useFrappeGetDocCount,
     useFrappePrefetchDocCount,
 } from './useDocument'
+export { useGetList, useGetCount, useGetDoc } from './useClient'
 export { useFrappeFileUpload } from './useFile'
 export { useFrappeEventListener, useFrappeDocumentEventListener, useFrappeDocTypeEventListener } from './useSocket'
 export {
