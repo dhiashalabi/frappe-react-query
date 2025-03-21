@@ -64,7 +64,7 @@ export const useGetCount = (
 ) => {
     const { url, client } = useContext(FrappeContext)
 
-    const query = useQuery({
+    const query = useQuery<GetCountResponse, FrappeError>({
         queryKey: ['frappe', doctype, args, `${getRequestURL(doctype, url)}?${getDocCountQueryString(args)}`],
         queryFn: () => client.getCount(doctype, args),
         ...options,
