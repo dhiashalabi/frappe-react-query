@@ -1,9 +1,9 @@
 import { useCallback, useContext, useState } from 'react'
-import { FrappeConfig, FrappeDoc, GetDocListArgs, Filter, FrappeError as Error } from '../types'
+import { FrappeConfig, FrappeDoc, GetDocListArgs, Filter, FrappeError as Error, GetCountResponse } from '../types'
 import { FrappeContext } from '../context/FrappeContext'
 import { getRequestURL, getDocListQueryString } from '../utils'
 import { useQuery, UseQueryOptions, useQueryClient, useMutation } from '@tanstack/react-query'
-
+import { FrappeDocument, FrappeError } from '@mussnad/frappe-js-client/dist/frappe/types'
 /**
  * Hook to fetch a document from the database
  *
@@ -20,16 +20,16 @@ import { useQuery, UseQueryOptions, useQueryClient, useMutation } from '@tanstac
  *
  * const { data, error, isFetching, mutate } = useFrappeGetDoc('DocType', 'name')
  */
-export const useFrappeGetDoc = <T = any>(
+export const useFrappeGetDoc = <T extends FrappeDocument = FrappeDocument>(
     doctype: string,
     name?: string,
     queryKey?: readonly any[],
-    options?: UseQueryOptions<FrappeDoc<T>, Error>,
+    options?: UseQueryOptions<T, FrappeError>,
 ) => {
-    const { url, db } = useContext(FrappeContext) as FrappeConfig
+    const { url, db } = useContext(FrappeContext)
     const defaultQueryKey = ['frappe', doctype, name, getRequestURL(doctype, url, name)]
 
-    const query = useQuery<FrappeDoc<T>, Error>({
+    const query = useQuery<T, FrappeError>({
         queryKey: queryKey ?? defaultQueryKey,
         queryFn: () => db.getDoc<T>(doctype, name),
         ...options,
@@ -157,9 +157,9 @@ export const useFrappePrefetchDocList = <T = any, K = FrappeDoc<T>>(
  *
  * const { createDoc, loading, error, isCompleted, reset } = useFrappeCreateDoc()
  */
-export const useFrappeCreateDoc = <T = any>(): {
+export const useFrappeCreateDoc = <T extends FrappeDocument = FrappeDocument>(): {
     /** Function to create a document in the database */
-    createDoc: (doctype: string, doc: T) => Promise<FrappeDoc<T>>
+    createDoc: (doctype: string, doc: T) => Promise<T>
     /** Will be true when the API request is pending.  */
     loading: boolean
     /** Error object returned from API call */
@@ -172,7 +172,7 @@ export const useFrappeCreateDoc = <T = any>(): {
     const { db } = useContext(FrappeContext) as FrappeConfig
     const [isCompleted, setIsCompleted] = useState(false)
 
-    const mutation = useMutation<FrappeDoc<T>, Error, { doctype: string; doc: T }>({
+    const mutation = useMutation<T, FrappeError, { doctype: string; doc: T }>({
         mutationFn: ({ doctype, doc }) => db.createDoc<T>(doctype, doc),
         onSuccess: () => {
             setIsCompleted(true)
@@ -213,9 +213,9 @@ export const useFrappeCreateDoc = <T = any>(): {
  *
  * const { updateDoc, loading, error, isCompleted, reset } = useFrappeUpdateDoc()
  */
-export const useFrappeUpdateDoc = <T = any>(): {
+export const useFrappeUpdateDoc = <T extends FrappeDocument = FrappeDocument>(): {
     /** Function to update a document in the database */
-    updateDoc: (doctype: string, docname: string | null, doc: Partial<T>) => Promise<FrappeDoc<T>>
+    updateDoc: (doctype: string, docname: string | null, doc: Partial<T>) => Promise<T>
     /** Will be true when the API request is pending.  */
     loading: boolean
     /** Error object returned from API call */
@@ -228,7 +228,7 @@ export const useFrappeUpdateDoc = <T = any>(): {
     const { db } = useContext(FrappeContext) as FrappeConfig
     const [isCompleted, setIsCompleted] = useState(false)
 
-    const mutation = useMutation<FrappeDoc<T>, Error, { doctype: string; docname: string | null; doc: Partial<T> }>({
+    const mutation = useMutation<T, FrappeError, { doctype: string; docname: string | null; doc: Partial<T> }>({
         mutationFn: ({ doctype, docname, doc }) => db.updateDoc<T>(doctype, docname, doc),
         onSuccess: () => {
             setIsCompleted(true)
@@ -333,18 +333,18 @@ export const useFrappeDeleteDoc = (): {
  *
  * const { data, error, isFetching, mutate } = useFrappeGetDocCount('DocType', { filters: [{ field: 'name', operator: 'like', value: 'test' }] })
  */
-export const useFrappeGetDocCount = <T = any>(
+export const useFrappeGetDocCount = <T extends FrappeDocument = FrappeDocument>(
     doctype: string,
     filters?: Filter<T>[],
     cache = false,
     debug = false,
     queryKey?: readonly any[],
-    options?: UseQueryOptions<number, Error>,
+    options?: UseQueryOptions<GetCountResponse, FrappeError>,
 ) => {
     const { db } = useContext(FrappeContext) as FrappeConfig
     const defaultQueryKey = ['frappe', 'count', doctype, filters, cache, debug]
 
-    const query = useQuery<number, Error>({
+    const query = useQuery<GetCountResponse, FrappeError>({
         queryKey: queryKey ?? defaultQueryKey,
         queryFn: () => db.getCount(doctype, filters, cache, debug),
         ...options,

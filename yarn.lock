@@ -864,10 +864,10 @@
   resolved "https://registry.yarnpkg.com/@microsoft/tsdoc/-/tsdoc-0.15.1.tgz#d4f6937353bc4568292654efb0a0e0532adbcba2"
   integrity sha512-4aErSrCR/On/e5G2hDP0wjooqDdauzEbIq8hIkIe5pXV0rtWJZvdCEKL0ykZxex+IxIwBp0eGeV48hQN07dXtw==
 
-"@mussnad/frappe-js-client@^1.6.4":
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/@mussnad/frappe-js-client/-/frappe-js-client-1.6.4.tgz#b743bf2548278b589847e40897e79b57b0ba82a5"
-  integrity sha512-s8JqjHSUat8crADDDbfCCd3fD/aWsNHSPmvTfiHLj3oWl9q8kKIeh0gNSI183aHJ/bSr07xRw4b340Xg/s0gHQ==
+"@mussnad/frappe-js-client@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@mussnad/frappe-js-client/-/frappe-js-client-2.2.5.tgz#d0efb6ab5dbb71427c3b058fb2bcf4046db9c9c5"
+  integrity sha512-b6qn0ukvc9ochGKSN7LAJAgzlg0QGrw81Vq/NnOz4GZ+nJp1LCO1MvBqyJmCnk10wNgVYJaBK2MkXFGZ6fKOWQ==
   dependencies:
     axios "^1.8.3"
 

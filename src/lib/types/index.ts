@@ -1,7 +1,7 @@
-import { FrappeApp, FrappeAuth, FrappeCall } from '@mussnad/frappe-js-client'
+import { FrappeApp, FrappeAuth, FrappeCall, FrappeClient } from '@mussnad/frappe-js-client'
 import { FrappeDB } from '@mussnad/frappe-js-client/dist/db'
 import { FrappeFileUpload } from '@mussnad/frappe-js-client/dist/file'
-import { Error } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeError } from '@mussnad/frappe-js-client/dist/frappe/types'
 import { Filter, FrappeDoc, GetDocListArgs } from '@mussnad/frappe-js-client/dist/db/types'
 import { FileArgs } from '@mussnad/frappe-js-client/dist/file/types'
 import { Socket } from 'socket.io-client'
@@ -21,7 +21,7 @@ export type {
     GetDocListArgs,
     Filter,
     FileArgs,
-    Error as FrappeError,
+    FrappeError,
 }
 
 export interface FrappeConfig {
@@ -32,6 +32,7 @@ export interface FrappeConfig {
     auth: FrappeAuth
     db: FrappeDB
     call: FrappeCall
+    client: FrappeClient
     file: FrappeFileUpload
     socket?: Socket
     /** Whether to sync user authentication in realtime */
@@ -113,4 +114,17 @@ export interface FrappeFileUploadResponse {
     uploaded_to_dropbox: 0 | 1
     uploaded_to_google_drive: 0 | 1
     doctype: 'File'
+}
+
+/**
+ * Response type for the getCount method
+ * @typeParam T - The type definition of the document object
+ * @typeParam K - The type of the document for args
+ *
+ * @example
+ * const { data, error, isFetching } = useGetCount('User')
+ */
+export interface GetCountResponse {
+    /** The number of documents in the database */
+    count: number
 }

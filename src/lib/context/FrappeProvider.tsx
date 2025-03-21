@@ -52,6 +52,8 @@ export const FrappeProvider = ({
             auth: frappe.auth(),
             db: frappe.db(),
             call: frappe.call(),
+            client: frappe.client(),
+            perms: frappe.perms(),
             file: frappe.file(),
             socket: enableSocket ? new SocketIO(url, siteName, socketPort, tokenParams).socket : undefined,
             enableSocket,
