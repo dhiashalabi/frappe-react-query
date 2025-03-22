@@ -2,8 +2,9 @@ import { useFrappeAuth } from '../lib'
 import styles from './login.module.css'
 
 export const Login = () => {
-    const { currentUser, isLoading, login, error } = useFrappeAuth()
+    const { authResponse, currentUser, isLoading, login, error } = useFrappeAuth()
 
+    console.log(authResponse)
     console.log(currentUser)
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()

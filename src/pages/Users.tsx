@@ -1,7 +1,10 @@
-import { useFrappeGetDocList } from '../lib'
+import { useGetList } from '../lib'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { Validate } from '../components/validate'
-interface User {
+import { Count } from '../components/count'
+import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
+
+interface User extends FrappeDoc<object> {
     name: string
     full_name: string
     email: string
@@ -35,10 +38,11 @@ const columns = [
 ]
 
 export function Users() {
-    const { data, error, isLoading } = useFrappeGetDocList('User', {
+    const { data, error, isLoading } = useGetList<User>('User', {
         fields: ['name', 'full_name', 'email', 'enabled', 'user_type'],
     })
 
+    console.log(data)
     const table = useReactTable({
         data: data ?? [],
         columns,
@@ -46,11 +50,12 @@ export function Users() {
     })
 
     if (isLoading) return <div>Loading...</div>
-    if (error) return <div>Error: {error.message}</div>
+    if (error) return <div>Error: {error?._server_messages?.[0]?.message}</div>
 
     return (
         <div className="users-page">
             <Validate />
+            <Count />
             <h1>Users</h1>
             <div className="table-container">
                 <table>
