@@ -1,8 +1,7 @@
 import { useContext } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { FrappeContext } from '../context/FrappeContext'
-import type { FrappeConfig } from '../types'
-import { FrappeDocument } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
 
 /**
  * Hook to validate a link
@@ -16,12 +15,8 @@ import { FrappeDocument } from '@mussnad/frappe-js-client/dist/frappe/types'
  *
  * const { data, error, isFetching, mutate } = useValidateLink('DocType', 'name', ['field1', 'field2'])
  */
-export const useValidateLink = <T extends FrappeDocument = FrappeDocument>(
-    doctype: string,
-    docname: string,
-    fields: string[],
-) => {
-    const { client } = useContext(FrappeContext) as FrappeConfig
+export const useValidateLink = <T extends FrappeDoc<object>>(doctype: string, docname: string, fields: string[]) => {
+    const { client } = useContext(FrappeContext)
 
     const query = useQuery({
         queryKey: ['validateLink', doctype, docname, fields],
