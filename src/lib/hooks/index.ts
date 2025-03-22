@@ -7,8 +7,6 @@ export {
     useFrappeCreateDoc,
     useFrappeUpdateDoc,
     useFrappeDeleteDoc,
-    useFrappeGetDocCount,
-    useFrappePrefetchDocCount,
 } from './useDocument'
 export { useGetList, useGetCount, useGetDoc } from './useClient'
 export { useFrappeFileUpload } from './useFile'
