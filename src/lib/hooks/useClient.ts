@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { getRequestURL, getDocListQueryString, getDocCountQueryString } from '../utils'
 import { GetCountArgs, GetDocArgs } from '@mussnad/frappe-js-client/dist/client/types'
-import { FrappeDocument } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
 
 /**
  * Fetches a list of documents from the Frappe database.
@@ -22,7 +22,7 @@ import { FrappeDocument } from '@mussnad/frappe-js-client/dist/frappe/types'
  * @example
  * const { data, error, isFetching, mutate } = useGetList('DocType', { filters: [{ field: 'name', operator: 'like', value: 'test' }] })
  */
-export const useGetList = <T extends FrappeDocument>(
+export const useGetList = <T extends FrappeDoc<object>>(
     doctype: string,
     args?: GetDocListArgs<T>,
     queryKey?: readonly any[],
@@ -88,7 +88,7 @@ export const useGetCount = (
  * @example
  * const { data, error, isFetching, mutate } = useGetDoc('DocType', 'name')
  */
-export const useGetDoc = <T extends FrappeDocument = FrappeDocument>(
+export const useGetDoc = <T extends FrappeDoc<object>>(
     doctype: string,
     name: string,
     args?: GetDocArgs<T>,
