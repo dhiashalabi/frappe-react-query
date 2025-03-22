@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { FrappeContext } from '../context/FrappeContext'
-import { FileArgs, FrappeError as Error, FrappeFileUploadResponse, FrappeConfig } from '../types'
+import { FileArgs, FrappeError, FrappeFileUploadResponse } from '../types'
 
 interface UseFrappeFileUploadReturnType<T = FrappeFileUploadResponse> {
     /** Function to upload the file */
@@ -11,7 +11,7 @@ interface UseFrappeFileUploadReturnType<T = FrappeFileUploadResponse> {
     /** Will be true when the file is being uploaded  */
     loading: boolean
     /** Error object returned from API call */
-    error: Error | null
+    error: FrappeError | null
     /** Will be true if file upload is successful. Else false */
     isCompleted: boolean
     /** Function to reset the state of the hook */
@@ -32,12 +32,12 @@ interface UseFrappeFileUploadReturnType<T = FrappeFileUploadResponse> {
  * }
  */
 export const useFrappeFileUpload = (): UseFrappeFileUploadReturnType => {
-    const { file } = useContext(FrappeContext) as FrappeConfig
+    const { file } = useContext(FrappeContext)
     const [uploadProgress, setUploadProgress] = useState(0)
 
     const mutation = useMutation<
         FrappeFileUploadResponse,
-        Error,
+        FrappeError,
         {
             f: File
             args: FileArgs
@@ -80,7 +80,7 @@ export const useFrappeFileUpload = (): UseFrappeFileUploadReturnType => {
         upload,
         progress: mutation.isSuccess ? 100 : uploadProgress,
         loading: mutation.isPending,
-        error: mutation.error as Error | null,
+        error: mutation.error,
         isCompleted: mutation.isSuccess,
         reset,
     }
