@@ -1,17 +1,18 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { AuthCredentials, AuthResponse, FrappeError as Error, FrappeAuthConfig, FrappeConfig } from '../types'
+import { AuthCredentials, AuthResponse, FrappeError, FrappeAuthConfig } from '../types'
 import { FrappeContext } from '../context/FrappeContext'
 
 interface FrappeAuthReturn {
     currentUser: string | null | undefined
     isLoading: boolean
     isFetching: boolean
-    error: Error | null | undefined
+    error: FrappeError | null | undefined
     login: (credentials: AuthCredentials) => Promise<AuthResponse>
     logout: () => Promise<void>
     updateCurrentUser: () => void
     getUserCookie: () => void
+    authResponse?: AuthResponse
 }
 
 /**
@@ -33,11 +34,8 @@ interface FrappeAuthReturn {
  *     },
  * )
  */
-export const useFrappeAuth = (
-    options?: any, // Keeping the options type flexible for backward compatibility
-    configs?: FrappeAuthConfig, // Additional configurations for the auth hook
-): FrappeAuthReturn => {
-    const { auth, tokenParams } = useContext(FrappeContext) as FrappeConfig
+export const useFrappeAuth = (options?: any, configs?: FrappeAuthConfig): FrappeAuthReturn => {
+    const { auth, tokenParams } = useContext(FrappeContext)
     const [userID, setUserID] = useState<string | null | undefined>()
     const queryClient = useQueryClient()
 
@@ -67,12 +65,12 @@ export const useFrappeAuth = (
     const queryKey = useMemo(() => ['logged-user'], [])
 
     const {
-        data: currentUser,
+        data,
         error,
         isLoading,
         isFetching,
         refetch: updateCurrentUser,
-    } = useQuery({
+    } = useQuery<AuthResponse, FrappeError>({
         queryKey,
         queryFn: () => auth.getLoggedInUser(configs?.userCheckMethod),
         enabled: !!(tokenParams?.useToken || userID || configs?.realtimeUserValidation),
@@ -90,12 +88,13 @@ export const useFrappeAuth = (
 
     const login = useCallback(
         async (credentials: AuthCredentials) => {
-            return auth.loginWithUsernamePassword(credentials).then((m) => {
+            return auth.loginWithUsernamePassword(credentials).then((response) => {
                 getUserCookie()
-                return m
+                queryClient.setQueryData(queryKey, response)
+                return response
             })
         },
-        [auth, getUserCookie],
+        [auth, getUserCookie, queryClient, queryKey],
     )
 
     const logout = useCallback(async () => {
@@ -107,9 +106,10 @@ export const useFrappeAuth = (
 
     return {
         isLoading: userID === undefined || isLoading,
-        currentUser: currentUser as string | null | undefined,
-        isFetching: isFetching,
-        error: error as Error | null | undefined,
+        currentUser: data?.currentUser as string | null | undefined,
+        authResponse: data,
+        isFetching,
+        error: error,
         login,
         logout,
         updateCurrentUser,
