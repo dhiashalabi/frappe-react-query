@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { FrappeContext } from '../context/FrappeContext'
-import { DocumentUpdateEventData, DocTypeListUpdateEventData, ViewerEventData, FrappeConfig } from '../types'
+import { DocumentUpdateEventData, DocTypeListUpdateEventData, ViewerEventData } from '../types'
 
 /** useFrappeEventListener hook for listening to events from the server
  * @param eventName - name of the event to listen to
@@ -16,7 +16,7 @@ import { DocumentUpdateEventData, DocTypeListUpdateEventData, ViewerEventData, F
  * ```
  */
 export const useFrappeEventListener = <T = any>(eventName: string, callback: (eventData: T) => void) => {
-    const { socket } = useContext(FrappeContext) as FrappeConfig
+    const { socket } = useContext(FrappeContext)
 
     useEffect(() => {
         if (socket === undefined) {
@@ -56,7 +56,7 @@ export const useFrappeDocumentEventListener = (
     onUpdateCallback: (eventData: DocumentUpdateEventData) => void,
     emitOpenCloseEventsOnMount = true,
 ) => {
-    const { socket } = useContext(FrappeContext) as FrappeConfig
+    const { socket } = useContext(FrappeContext)
 
     /** Array of user IDs of users currently viewing the document. This is updated when "doc_viewers" event is published */
     const [viewers, setViewers] = useState<string[]>([])
@@ -138,7 +138,7 @@ export const useFrappeDocTypeEventListener = (
     doctype: string,
     onListUpdateCallback: (eventData: DocTypeListUpdateEventData) => void,
 ) => {
-    const { socket } = useContext(FrappeContext) as FrappeConfig
+    const { socket } = useContext(FrappeContext)
 
     useEffect(() => {
         if (socket === undefined) {
