@@ -4,7 +4,6 @@ import { Filter } from '../types'
 import { SearchResult } from '../types'
 import { useQuery } from '@tanstack/react-query'
 import { FrappeContext } from '../context/FrappeContext'
-import type { FrappeConfig } from '../types'
 
 /**
  * Hook to search for documents - only works with Frappe v15+
@@ -24,7 +23,7 @@ import type { FrappeConfig } from '../types'
  */
 export const useSearch = (doctype: string, text: string, filters: Filter[] = [], limit = 20, debounce = 250) => {
     const debouncedText = useDebounce(text, debounce)
-    const { call } = useContext(FrappeContext) as FrappeConfig
+    const { call } = useContext(FrappeContext)
 
     const query = useQuery<{ message: SearchResult[] }>({
         queryKey: ['search', doctype, debouncedText, filters, limit],
