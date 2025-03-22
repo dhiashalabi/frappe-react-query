@@ -1,8 +1,8 @@
 import { FrappeApp, FrappeAuth, FrappeCall, FrappeClient } from '@mussnad/frappe-js-client'
 import { FrappeDB } from '@mussnad/frappe-js-client/dist/db'
 import { FrappeFileUpload } from '@mussnad/frappe-js-client/dist/file'
-import { FrappeError } from '@mussnad/frappe-js-client/dist/frappe/types'
-import { Filter, FrappeDoc, GetDocListArgs } from '@mussnad/frappe-js-client/dist/db/types'
+import { FrappeDoc, FrappeError } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { Filter, GetDocListArgs } from '@mussnad/frappe-js-client/dist/db/types'
 import { FileArgs } from '@mussnad/frappe-js-client/dist/file/types'
 import { Socket } from 'socket.io-client'
 import {
