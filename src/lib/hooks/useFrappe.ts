@@ -12,6 +12,7 @@ export const useFrappe = () => {
 export const useFrappeAuth = () => useFrappe().auth
 export const useFrappeDB = () => useFrappe().db
 export const useFrappeCall = () => useFrappe().call
+export const useFrappeClient = () => useFrappe().client
 export const useFrappeFile = () => useFrappe().file
 export const useFrappeSocket = () => useFrappe().socket
 export const useFrappeApp = () => useFrappe().app
