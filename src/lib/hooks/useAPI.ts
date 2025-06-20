@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient, QueryKey } from '@tanstack/react
 import { FrappeContext } from '../context/FrappeContext'
 import { FrappeError } from '../types'
 import { encodeQueryData } from '../utils'
-import { ApiParams, TypedResponse } from '@mussnad/frappe-js-client/dist/call/types'
+import { ApiParams, TypedResponse } from 'frappe-js-client/dist/call/types'
 
 /**
  *  Hook to make a GET request to the server

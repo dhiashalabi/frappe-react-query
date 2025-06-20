@@ -2,7 +2,7 @@ import { useGetList } from '../lib'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { Validate } from '../components/validate'
 import { Count } from '../components/count'
-import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeDoc } from 'frappe-js-client/dist/frappe/types'
 
 interface User extends FrappeDoc<object> {
     name: string

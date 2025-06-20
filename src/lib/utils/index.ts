@@ -1,4 +1,4 @@
-import { GetCountArgs } from '@mussnad/frappe-js-client/dist/client/types'
+import { GetCountArgs } from 'frappe-js-client/dist/client/types'
 import { FrappeDoc, GetDocListArgs } from '../types'
 
 export const getRequestURL = (doctype: string, url: string, docname?: string | null): string => {

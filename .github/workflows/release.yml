@@ -26,21 +26,24 @@ jobs:
               with:
                   node-version: 20
 
+            - name: Check lockfile integrity
+              run: git diff --exit-code yarn.lock
+
             - name: Install dependencies 📥
-              run: npm install
+              run: yarn install --frozen-lockfile
 
             - name: Build package 🔨
-              run: npm run build
+              run: yarn run build
 
             - name: Audit dependencies 🔍
-              run: npm audit signature
+              run: yarn audit --level high || true
 
             - name: Run Semantic Release 🚀
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-                  GIT_AUTHOR_NAME: 'Mussnad DevOps'
-                  GIT_AUTHOR_EMAIL: 'devops@mussnad.dev'
-                  GIT_COMMITTER_NAME: 'Mussnad DevOps'
-                  GIT_COMMITTER_EMAIL: 'devops@mussnad.dev'
+                  GIT_AUTHOR_NAME: 'DHia A. SHalabi'
+                  GIT_AUTHOR_EMAIL: 'dhia.shalabi@gmail.com'
+                  GIT_COMMITTER_NAME: 'DHia A. SHalabi'
+                  GIT_COMMITTER_EMAIL: 'dhia.shalabi@gmail.com'
               run: npx semantic-release

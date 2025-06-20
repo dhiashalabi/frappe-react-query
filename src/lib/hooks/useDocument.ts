@@ -3,7 +3,7 @@ import { GetDocListArgs } from '../types'
 import { FrappeContext } from '../context/FrappeContext'
 import { getRequestURL, getDocListQueryString } from '../utils'
 import { useQuery, UseQueryOptions, useQueryClient, useMutation } from '@tanstack/react-query'
-import { FrappeDoc, FrappeError } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeDoc, FrappeError } from 'frappe-js-client/dist/frappe/types'
 
 /**
  * Hook to fetch a document from the database

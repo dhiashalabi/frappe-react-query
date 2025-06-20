@@ -3,8 +3,8 @@ import { FrappeError, GetCountResponse, GetDocListArgs } from '../types'
 import { useContext } from 'react'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { getRequestURL, getDocListQueryString, getDocCountQueryString } from '../utils'
-import { GetCountArgs, GetDocArgs } from '@mussnad/frappe-js-client/dist/client/types'
-import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { GetCountArgs, GetDocArgs } from 'frappe-js-client/dist/client/types'
+import { FrappeDoc } from 'frappe-js-client/dist/frappe/types'
 
 /**
  * Fetches a list of documents from the Frappe database.

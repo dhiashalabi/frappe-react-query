@@ -1,16 +1,16 @@
-import { FrappeApp, FrappeAuth, FrappeCall, FrappeClient } from '@mussnad/frappe-js-client'
-import { FrappeDB } from '@mussnad/frappe-js-client/dist/db'
-import { FrappeFileUpload } from '@mussnad/frappe-js-client/dist/file'
-import { FrappeDoc, FrappeError } from '@mussnad/frappe-js-client/dist/frappe/types'
-import { Filter, GetDocListArgs } from '@mussnad/frappe-js-client/dist/db/types'
-import { FileArgs } from '@mussnad/frappe-js-client/dist/file/types'
+import { FrappeApp, FrappeAuth, FrappeCall, FrappeClient } from 'frappe-js-client'
+import { FrappeDB } from 'frappe-js-client/dist/db'
+import { FrappeFileUpload } from 'frappe-js-client/dist/file'
+import { FrappeDoc, FrappeError } from 'frappe-js-client/dist/frappe/types'
+import { Filter, GetDocListArgs } from 'frappe-js-client/dist/db/types'
+import { FileArgs } from 'frappe-js-client/dist/file/types'
 import { Socket } from 'socket.io-client'
 import {
     AuthCredentials,
     AuthResponse,
     OTPCredentials,
     UserPassCredentials,
-} from '@mussnad/frappe-js-client/dist/auth/types'
+} from 'frappe-js-client/dist/auth/types'
 
 export type {
     OTPCredentials,

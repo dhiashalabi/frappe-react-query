@@ -1,5 +1,5 @@
 import { useValidateLink } from '../lib'
-import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeDoc } from 'frappe-js-client/dist/frappe/types'
 
 interface UserValidationData extends FrappeDoc<object> {
     name: string
