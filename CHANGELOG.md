@@ -1,3 +1,9 @@
+## [1.6.1](https://github.com/dhiashalabi/frappe-react-query/compare/v1.6.0...v1.6.1) (2025-06-20)
+
+### Bug Fixes
+
+- update import paths for Frappe types to use the correct package name ([53114f4](https://github.com/dhiashalabi/frappe-react-query/commit/53114f4e759013776ed78dab6c7b2dc58ced3fc9))
+
 # [1.6.0](https://github.com/mussnad/frappe-react-query/compare/v1.5.0...v1.6.0) (2025-03-22)
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 {
     "name": "frappe-react-query",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "description": "A React Query SDK for Frappe",
     "author": "DHia A. SHalabi",
     "license": "MIT",
