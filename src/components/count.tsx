@@ -1,5 +1,5 @@
 import { useGetDoc } from '../lib'
-import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeDoc } from 'frappe-js-client/dist/frappe/types'
 
 type User = FrappeDoc<object> & {
     enabled: number

@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { FrappeContext } from '../context/FrappeContext'
-import { FrappeDoc } from '@mussnad/frappe-js-client/dist/frappe/types'
+import { FrappeDoc } from 'frappe-js-client/dist/frappe/types'
 
 /**
  * Hook to validate a link

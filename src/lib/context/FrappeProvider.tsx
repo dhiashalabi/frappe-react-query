@@ -1,5 +1,5 @@
 import { PropsWithChildren, useMemo } from 'react'
-import { FrappeApp } from '@mussnad/frappe-js-client'
+import { FrappeApp } from 'frappe-js-client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { FrappeConfig, TokenParams } from '../types'
 import { SocketIO } from '../socket'
