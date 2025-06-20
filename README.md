@@ -1,135 +1,88 @@
 # Frappe React Query 📦
 
-A powerful React Query package for Frappe Framework, providing seamless integration between React applications and Frappe backend services.
+A powerful React Query package for Frappe Framework, providing seamless integration between React applications and Frappe backend services with real-time capabilities.
 
-[![npm version](https://badge.fury.io/js/@mussnad%2Ffrappe-react-query.svg)](https://badge.fury.io/js/@mussnad%2Ffrappe-react-query)
+[![npm version](https://badge.fury.io/js/frappe-react-query.svg)](https://badge.fury.io/js/frappe-react-query)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-## Features
+## ✨ Features
 
--   🔄 Real-time data synchronization with Frappe backend
--   🎣 Custom React hooks for common Frappe operations
--   🔍 Built-in search functionality
--   📝 Document CRUD operations
--   🔐 Authentication management
--   📁 File upload capabilities
--   🌐 Socket.io integration
--   🚀 Built on top of @tanstack/react-query
+- 🔄 **Real-time data synchronization** with Frappe backend via Socket.io
+- 🎣 **Comprehensive React hooks** for all Frappe operations
+- 🔍 **Built-in search functionality** with debouncing
+- 📝 **Full CRUD operations** for documents
+- 🔐 **Authentication management** with session handling
+- 📁 **File upload capabilities** with progress tracking
+- 🌐 **Socket.io integration** for live updates
+- 🚀 **Built on @tanstack/react-query** for optimal caching and performance
+- 📱 **TypeScript support** with full type definitions
+- ⚡ **Prefetching capabilities** for better UX
 
-## Installation
+## 📦 Installation
 
 ```bash
-npm install @mussnad/frappe-react-query
+npm install frappe-react-query
 # or
-yarn add @mussnad/frappe-react-query
+yarn add frappe-react-query
 # or
-pnpm add @mussnad/frappe-react-query
+pnpm add frappe-react-query
 ```
 
-## Dependencies
+## 🔧 Dependencies
 
 The package requires the following peer dependencies:
 
--   React ^19.0.0
--   React DOM ^19.0.0
--   @tanstack/react-query ^5.67.3
--   socket.io-client ^4.8.1
+```json
+{
+  "react": "^19.0.0",
+  "react-dom": "^19.0.0",
+  "@tanstack/react-query": "^5.67.3",
+  "socket.io-client": "^4.8.1"
+}
+```
 
-## Quick Start
+## 🚀 Quick Start
 
-1. Wrap your application with `FrappeProvider`:
+### 1. Setup Provider
+
+Wrap your application with `FrappeProvider`:
 
 ```tsx
-import { FrappeProvider } from '@mussnad/frappe-react-query'
+import { FrappeProvider } from 'frappe-react-query'
 
 function App() {
-    return (
-        <FrappeProvider>
-            <YourApp />
-        </FrappeProvider>
-    )
+  return (
+    <FrappeProvider
+      url="https://your-frappe-site.com"
+      enableSocket={true} // Enable real-time features
+    >
+      <YourApp />
+    </FrappeProvider>
+  )
 }
 ```
 
-2. Start using the hooks in your components:
+### 2. Use Hooks
+
+Start using the hooks in your components:
 
 ```tsx
-import { useFrappeGetDoc } from '@mussnad/frappe-react-query'
+import { useFrappeGetDoc } from 'frappe-react-query'
 
 function UserProfile() {
-    const { data, isLoading, error } = useFrappeGetDoc('User', 'john.doe@example.com')
+  const { data, isLoading, error } = useFrappeGetDoc('User', 'john.doe@example.com')
 
-    if (isLoading) return <div>Loading...</div>
-    if (error) return <div>Error: {error.message}</div>
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
 
-    return <div>Welcome {data?.full_name}</div>
+  return <div>Welcome {data?.full_name}</div>
 }
 ```
 
-## Core Hooks
+## 📚 API Reference
 
-### Document Operations
-
-#### `useFrappeGetDoc`
-
-Fetch a single document from the database.
-
-```tsx
-const { data, error, isFetching, mutate } = useFrappeGetDoc<T>(
-  doctype: string,
-  name?: string,
-  queryKey?: readonly any[],
-  options?: UseQueryOptions
-)
-```
-
-#### `useFrappeGetDocList`
-
-Fetch a list of documents with filtering and pagination.
-
-```tsx
-const { data, error, isFetching, mutate } = useFrappeGetDocList<T>(
-  doctype: string,
-  args?: GetDocListArgs<T>,
-  queryKey?: readonly any[],
-  options?: UseQueryOptions
-)
-```
-
-#### `useFrappeCreateDoc`
-
-Create a new document.
-
-```tsx
-const { createDoc, loading, error, isCompleted, reset } = useFrappeCreateDoc<T>()
-
-// Usage
-await createDoc(doctype, documentData)
-```
-
-#### `useFrappeUpdateDoc`
-
-Update an existing document.
-
-```tsx
-const { updateDoc, loading, error, isCompleted, reset } = useFrappeUpdateDoc<T>()
-
-// Usage
-await updateDoc(doctype, docname, updates)
-```
-
-#### `useFrappeDeleteDoc`
-
-Delete a document.
-
-```tsx
-const { deleteDoc, loading, error, isCompleted, reset } = useFrappeDeleteDoc()
-
-// Usage
-await deleteDoc(doctype, docname)
-```
-
-### Authentication
+### 🔐 Authentication Hooks
 
 #### `useFrappeAuth`
 
@@ -154,7 +107,126 @@ await login({ username, password })
 await logout()
 ```
 
-### Search
+**Parameters:**
+- `options` (optional): Configuration options for the hook
+
+**Returns:**
+- `currentUser`: Current authenticated user
+- `isLoading`: Loading state
+- `isFetching`: Fetching state
+- `error`: Error object
+- `login`: Login function
+- `logout`: Logout function
+- `updateCurrentUser`: Update current user function
+- `getUserCookie`: Get user cookie function
+
+### 📄 Document Operations
+
+#### `useFrappeGetDoc`
+
+Fetch a single document from the database.
+
+```tsx
+const { data, error, isFetching, mutate } = useFrappeGetDoc<T>(
+  doctype: string,
+  name?: string,
+  queryKey?: readonly any[],
+  options?: UseQueryOptions
+)
+```
+
+**Parameters:**
+- `doctype`: The doctype to fetch
+- `name`: The name of the document to fetch
+- `queryKey` (optional): Custom query key for caching
+- `options` (optional): React Query options
+
+**Returns:**
+- `data`: The document data
+- `error`: Error object
+- `isFetching`: Fetching state
+- `mutate`: Refetch function
+
+#### `useFrappeGetDocList`
+
+Fetch a list of documents with filtering and pagination.
+
+```tsx
+const { data, error, isFetching, mutate } = useFrappeGetDocList<T>(
+  doctype: string,
+  args?: GetDocListArgs<T>,
+  queryKey?: readonly any[],
+  options?: UseQueryOptions
+)
+```
+
+**Parameters:**
+- `doctype`: Name of the doctype to fetch
+- `args` (optional): Arguments for filtering, pagination, etc.
+- `queryKey` (optional): Custom query key for caching
+- `options` (optional): React Query options
+
+**Returns:**
+- `data`: Array of documents
+- `error`: Error object
+- `isFetching`: Fetching state
+- `mutate`: Refetch function
+
+#### `useFrappeCreateDoc`
+
+Create a new document.
+
+```tsx
+const { createDoc, loading, error, isCompleted, reset } = useFrappeCreateDoc<T>()
+
+// Usage
+await createDoc(doctype, documentData)
+```
+
+**Returns:**
+- `createDoc`: Function to create a document
+- `loading`: Loading state
+- `error`: Error object
+- `isCompleted`: Success state
+- `reset`: Reset function
+
+#### `useFrappeUpdateDoc`
+
+Update an existing document.
+
+```tsx
+const { updateDoc, loading, error, isCompleted, reset } = useFrappeUpdateDoc<T>()
+
+// Usage
+await updateDoc(doctype, docname, updates)
+```
+
+**Returns:**
+- `updateDoc`: Function to update a document
+- `loading`: Loading state
+- `error`: Error object
+- `isCompleted`: Success state
+- `reset`: Reset function
+
+#### `useFrappeDeleteDoc`
+
+Delete a document.
+
+```tsx
+const { deleteDoc, loading, error, isCompleted, reset } = useFrappeDeleteDoc()
+
+// Usage
+await deleteDoc(doctype, docname)
+```
+
+**Returns:**
+- `deleteDoc`: Function to delete a document
+- `loading`: Loading state
+- `error`: Error object
+- `isCompleted`: Success state
+- `reset`: Reset function
+
+### 🔍 Search Hooks
 
 #### `useSearch`
 
@@ -170,7 +242,20 @@ const { data, error, isLoading, mutate } = useSearch(
 )
 ```
 
-### API Calls
+**Parameters:**
+- `doctype`: The doctype to search in
+- `text`: Search text
+- `filters` (optional): Additional filters
+- `limit` (optional): Maximum results (default: 10)
+- `debounce` (optional): Debounce delay in ms (default: 300)
+
+**Returns:**
+- `data`: Search results
+- `error`: Error object
+- `isLoading`: Loading state
+- `mutate`: Refetch function
+
+### 🌐 API Call Hooks
 
 #### `useFrappeGetCall`
 
@@ -186,539 +271,43 @@ const { data, error, isLoading } = useFrappeGetCall<T>(
 )
 ```
 
-#### Fetching a Single Document
+**Parameters:**
+- `method`: Method name (e.g., "frappe.client.get_list")
+- `params` (optional): Parameters to pass
+- `queryKey` (optional): Custom query key
+- `options` (optional): React Query options
+- `type` (optional): Request type ('GET' or 'POST')
+
+**Returns:**
+- `data`: Response data
+- `error`: Error object
+- `isLoading`: Loading state
+
+#### `useFrappePostCall`
+
+Make POST requests to Frappe endpoints.
 
 ```tsx
-import { useFrappeGetDoc } from '@mussnad/frappe-react-query'
-
-// Basic usage
-function UserProfile({ userId }) {
-    const { data, isLoading, error } = useFrappeGetDoc('User', userId)
-
-    if (isLoading) return <div>Loading...</div>
-    if (error) return <div>Error: {error.message}</div>
-
-    return (
-        <div>
-            <h1>{data.full_name}</h1>
-            <p>Email: {data.email}</p>
-        </div>
-    )
-}
-
-// With TypeScript
-interface User {
-    name: string
-    full_name: string
-    email: string
-    user_image?: string
-    roles: string[]
-}
-
-function TypedUserProfile({ userId }) {
-    const { data: user } = useFrappeGetDoc<User>('User', userId)
-
-    return (
-        user && (
-            <div>
-                <h1>{user.full_name}</h1>
-                {user.user_image && (
-                    <img
-                        src={user.user_image}
-                        alt={user.full_name}
-                    />
-                )}
-                <ul>
-                    {user.roles.map((role) => (
-                        <li key={role}>{role}</li>
-                    ))}
-                </ul>
-            </div>
-        )
-    )
-}
+const { call, result, loading, error, isCompleted, reset } = useFrappePostCall<T>(method)
 ```
 
-#### Fetching Document Lists
+#### `useFrappePutCall`
+
+Make PUT requests to Frappe endpoints.
 
 ```tsx
-import { useFrappeGetDocList } from '@mussnad/frappe-react-query'
-
-// Basic list with filters
-function UserList() {
-    const { data: users } = useFrappeGetDocList('User', {
-        fields: ['name', 'full_name', 'user_type'],
-        filters: [['user_type', '=', 'System User']],
-        orderBy: {
-            field: 'creation',
-            order: 'desc',
-        },
-        limit: 20,
-    })
-
-    return <ul>{users?.map((user) => <li key={user.name}>{user.full_name}</li>)}</ul>
-}
-
-// Paginated list with search
-function PaginatedUserList() {
-    const [page, setPage] = useState(1)
-    const [searchText, setSearchText] = useState('')
-
-    const { data, isLoading, hasNextPage } = useFrappeGetDocList('User', {
-        fields: ['name', 'full_name', 'email'],
-        filters: [
-            ['enabled', '=', 1],
-            ['full_name', 'like', `%${searchText}%`],
-        ],
-        limit: 10,
-        start: (page - 1) * 10,
-    })
-
-    return (
-        <div>
-            <input
-                type="search"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                placeholder="Search users..."
-            />
-
-            {isLoading ? (
-                <div>Loading...</div>
-            ) : (
-                <>
-                    <ul>
-                        {data?.map((user) => (
-                            <li key={user.name}>
-                                {user.full_name} ({user.email})
-                            </li>
-                        ))}
-                    </ul>
-
-                    <div>
-                        <button
-                            onClick={() => setPage((p) => p - 1)}
-                            disabled={page === 1}
-                        >
-                            Previous
-                        </button>
-                        <span>Page {page}</span>
-                        <button
-                            onClick={() => setPage((p) => p + 1)}
-                            disabled={!hasNextPage}
-                        >
-                            Next
-                        </button>
-                    </div>
-                </>
-            )}
-        </div>
-    )
-}
+const { call, result, loading, error, isCompleted, reset } = useFrappePutCall<T>(method)
 ```
 
-#### Creating Documents
+#### `useFrappeDeleteCall`
+
+Make DELETE requests to Frappe endpoints.
 
 ```tsx
-import { useFrappeCreateDoc } from '@mussnad/frappe-react-query'
-
-function CreateTodoForm() {
-    const { createDoc, loading, error, isCompleted, reset } = useFrappeCreateDoc()
-    const [description, setDescription] = useState('')
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            await createDoc('ToDo', {
-                description,
-                priority: 'Medium',
-                status: 'Open',
-            })
-            setDescription('')
-            // Optional: Show success message
-        } catch (err) {
-            // Handle error
-        }
-    }
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="What needs to be done?"
-            />
-            <button
-                type="submit"
-                disabled={loading}
-            >
-                {loading ? 'Creating...' : 'Create Todo'}
-            </button>
-            {error && <div className="error">{error.message}</div>}
-            {isCompleted && <div className="success">Todo created successfully!</div>}
-        </form>
-    )
-}
+const { call, result, loading, error, isCompleted, reset } = useFrappeDeleteCall<T>(method)
 ```
 
-#### Updating Documents
-
-```tsx
-import { useFrappeUpdateDoc } from '@mussnad/frappe-react-query'
-
-function TodoItem({ todo }) {
-    const { updateDoc, loading } = useFrappeUpdateDoc()
-
-    const toggleStatus = async () => {
-        await updateDoc('ToDo', todo.name, {
-            status: todo.status === 'Open' ? 'Completed' : 'Open',
-        })
-    }
-
-    return (
-        <div>
-            <input
-                type="checkbox"
-                checked={todo.status === 'Completed'}
-                onChange={toggleStatus}
-                disabled={loading}
-            />
-            <span
-                style={{
-                    textDecoration: todo.status === 'Completed' ? 'line-through' : 'none',
-                }}
-            >
-                {todo.description}
-            </span>
-        </div>
-    )
-}
-```
-
-### Authentication Examples
-
-#### Login Form
-
-```tsx
-import { useFrappeAuth } from '@mussnad/frappe-react-query'
-
-function LoginForm() {
-    const { login, error, isLoading } = useFrappeAuth()
-    const [credentials, setCredentials] = useState({
-        username: '',
-        password: '',
-    })
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            const response = await login(credentials)
-            // Handle successful login
-            console.log('Logged in as:', response.full_name)
-        } catch (err) {
-            // Error is handled by the hook
-        }
-    }
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <input
-                    type="email"
-                    value={credentials.username}
-                    onChange={(e) =>
-                        setCredentials((prev) => ({
-                            ...prev,
-                            username: e.target.value,
-                        }))
-                    }
-                    placeholder="Email"
-                />
-            </div>
-            <div>
-                <input
-                    type="password"
-                    value={credentials.password}
-                    onChange={(e) =>
-                        setCredentials((prev) => ({
-                            ...prev,
-                            password: e.target.value,
-                        }))
-                    }
-                    placeholder="Password"
-                />
-            </div>
-            <button
-                type="submit"
-                disabled={isLoading}
-            >
-                {isLoading ? 'Logging in...' : 'Login'}
-            </button>
-            {error && <div className="error">{error.message}</div>}
-        </form>
-    )
-}
-```
-
-#### User Profile with Auth
-
-```tsx
-import { useFrappeAuth } from '@mussnad/frappe-react-query'
-
-function UserProfile() {
-    const { currentUser, logout, isLoading } = useFrappeAuth()
-
-    if (isLoading) return <div>Loading...</div>
-    if (!currentUser) return <div>Please log in</div>
-
-    return (
-        <div>
-            <h2>Welcome, {currentUser}</h2>
-            <button onClick={logout}>Logout</button>
-        </div>
-    )
-}
-```
-
-### Search Implementation
-
-#### Search with Debounce
-
-```tsx
-import { useSearch } from '@mussnad/frappe-react-query'
-
-function UserSearch() {
-    const [searchText, setSearchText] = useState('')
-    const { data, isLoading } = useSearch(
-        'User', // doctype
-        searchText, // search text
-        [['enabled', '=', 1]], // filters
-        10, // limit
-        300, // debounce in ms
-    )
-
-    return (
-        <div>
-            <input
-                type="search"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                placeholder="Search users..."
-            />
-
-            {isLoading ? (
-                <div>Searching...</div>
-            ) : (
-                <ul>{data?.map((result) => <li key={result.value}>{result.label}</li>)}</ul>
-            )}
-        </div>
-    )
-}
-```
-
-### File Upload Example
-
-```tsx
-import { useFrappeFileUpload } from '@mussnad/frappe-react-query'
-
-function FileUploader() {
-    const { upload, progress, loading, error, isCompleted } = useFrappeFileUpload()
-
-    const handleFileChange = async (e) => {
-        const file = e.target.files[0]
-        if (!file) return
-
-        try {
-            const response = await upload(file, {
-                doctype: 'User',
-                docname: 'current_user@example.com',
-                fieldname: 'user_image',
-                file_url: '',
-                folder: 'Home/User Images',
-                is_private: 0,
-            })
-
-            console.log('File uploaded:', response.file_url)
-        } catch (err) {
-            console.error('Upload failed:', err)
-        }
-    }
-
-    return (
-        <div>
-            <input
-                type="file"
-                onChange={handleFileChange}
-                disabled={loading}
-            />
-
-            {loading && (
-                <div>
-                    Upload Progress: {progress}%
-                    <div
-                        className="progress-bar"
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
-            )}
-
-            {error && <div className="error">{error.message}</div>}
-            {isCompleted && <div className="success">File uploaded successfully!</div>}
-        </div>
-    )
-}
-```
-
-### API Call Examples
-
-#### Custom API Endpoint
-
-```tsx
-import { useFrappeGetCall } from '@mussnad/frappe-react-query'
-
-function CustomReport() {
-    const { data, isLoading } = useFrappeGetCall('my_app.api.get_custom_report', {
-        start_date: '2024-01-01',
-        end_date: '2024-03-31',
-    })
-
-    return <div>{isLoading ? <div>Loading report...</div> : <pre>{JSON.stringify(data, null, 2)}</pre>}</div>
-}
-```
-
-### Real-world Complex Example
-
-Here's a more complex example combining multiple hooks and features:
-
-```tsx
-import { useFrappeAuth, useFrappeGetDocList, useFrappeUpdateDoc, useSearch } from '@mussnad/frappe-react-query'
-
-interface Task {
-    name: string
-    subject: string
-    status: 'Open' | 'Working' | 'Completed'
-    priority: 'Low' | 'Medium' | 'High'
-    assigned_to: string
-    description: string
-}
-
-function TaskManager() {
-    const { currentUser } = useFrappeAuth()
-    const [searchText, setSearchText] = useState('')
-    const [selectedStatus, setSelectedStatus] = useState<Task['status']>('Open')
-
-    // Get tasks assigned to current user
-    const { data: tasks, isLoading } = useFrappeGetDocList<Task>('Task', {
-        fields: ['name', 'subject', 'status', 'priority', 'assigned_to', 'description'],
-        filters: [
-            ['assigned_to', '=', currentUser],
-            ['status', '=', selectedStatus],
-        ],
-        orderBy: {
-            field: 'modified',
-            order: 'desc',
-        },
-    })
-
-    // Search functionality
-    const { data: searchResults } = useSearch('Task', searchText, [['assigned_to', '=', currentUser]], 5)
-
-    // Update task status
-    const { updateDoc, loading: updating } = useFrappeUpdateDoc<Task>()
-
-    const handleStatusChange = async (taskName: string, newStatus: Task['status']) => {
-        try {
-            await updateDoc('Task', taskName, { status: newStatus })
-            // Task list will automatically update due to React Query's cache invalidation
-        } catch (err) {
-            console.error('Failed to update task:', err)
-        }
-    }
-
-    return (
-        <div className="task-manager">
-            <div className="search-bar">
-                <input
-                    type="search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    placeholder="Search tasks..."
-                />
-                {searchText && (
-                    <div className="search-results">
-                        {searchResults?.map((result) => (
-                            <div
-                                key={result.value}
-                                className="search-item"
-                            >
-                                {result.label}
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            <div className="status-filter">
-                {(['Open', 'Working', 'Completed'] as Task['status'][]).map((status) => (
-                    <button
-                        key={status}
-                        onClick={() => setSelectedStatus(status)}
-                        className={selectedStatus === status ? 'active' : ''}
-                    >
-                        {status}
-                    </button>
-                ))}
-            </div>
-
-            {isLoading ? (
-                <div>Loading tasks...</div>
-            ) : (
-                <div className="task-list">
-                    {tasks?.map((task) => (
-                        <div
-                            key={task.name}
-                            className="task-item"
-                        >
-                            <h3>{task.subject}</h3>
-                            <p>{task.description}</p>
-                            <div className="task-actions">
-                                <select
-                                    value={task.status}
-                                    onChange={(e) => handleStatusChange(task.name, e.target.value as Task['status'])}
-                                    disabled={updating}
-                                >
-                                    <option value="Open">Open</option>
-                                    <option value="Working">Working</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                                <span className={`priority priority-${task.priority.toLowerCase()}`}>
-                                    {task.priority}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
-    )
-}
-```
-
-This expanded documentation provides concrete, real-world examples that demonstrate how to:
-
--   Combine multiple hooks
--   Handle loading and error states
--   Implement TypeScript interfaces
--   Create reusable components
--   Manage complex state
--   Implement search and filtering
--   Handle file uploads
--   Manage authentication
--   Make custom API calls
-
-Each example includes proper error handling, loading states, and TypeScript support where applicable.
-
-### File Operations
+### 📁 File Operations
 
 #### `useFrappeFileUpload`
 
@@ -729,98 +318,386 @@ const { upload, progress, loading, error, isCompleted, reset } = useFrappeFileUp
 
 // Usage
 await upload(file, {
-    doctype: 'User',
-    docname: 'john.doe@example.com',
-    fieldname: 'avatar',
+  doctype: 'User',
+  docname: 'john.doe@example.com',
+  fieldname: 'avatar',
 })
 ```
 
-## Advanced Features
+**Returns:**
+- `upload`: Upload function
+- `progress`: Upload progress (0-100)
+- `loading`: Loading state
+- `error`: Error object
+- `isCompleted`: Success state
+- `reset`: Reset function
 
-### Prefetching
+### 🔌 Socket/Real-time Hooks
 
-The package provides prefetching capabilities for optimal performance:
+#### `useFrappeEventListener`
+
+Listen to custom events from the server.
 
 ```tsx
-const prefetchDoc = useFrappePrefetchDoc(doctype, name)
-const prefetchList = useFrappePrefetchDocList(doctype, args)
-const prefetchCall = useFrappePrefetchCall(method, params)
-
-// Usage
-await prefetchDoc()
+useFrappeEventListener('my_event', (data) => {
+  console.log('Event received:', data)
+})
 ```
 
-### Document Count
+#### `useFrappeDocumentEventListener`
+
+Listen to document-specific events (updates, viewers).
 
 ```tsx
-const { data: count } = useFrappeGetDocCount(
-  doctype,
-  filters?,
-  cache?,
-  debug?
+const { viewers, emitDocOpen, emitDocClose } = useFrappeDocumentEventListener(
+  'User',
+  'john.doe@example.com',
+  (data) => {
+    console.log('Document updated:', data)
+  }
 )
 ```
 
-### Link Validation
+**Returns:**
+- `viewers`: Array of user IDs viewing the document
+- `emitDocOpen`: Function to emit doc_open event
+- `emitDocClose`: Function to emit doc_close event
+
+#### `useFrappeDocTypeEventListener`
+
+Listen to doctype-level events.
+
+```tsx
+useFrappeDocTypeEventListener('User', (data) => {
+  console.log('Doctype updated:', data)
+})
+```
+
+### 🔧 Utility Hooks
+
+#### `useFrappePrefetchDoc`
+
+Prefetch a document for better performance.
+
+```tsx
+const prefetchDoc = useFrappePrefetchDoc(doctype, name)
+await prefetchDoc()
+```
+
+#### `useFrappePrefetchDocList`
+
+Prefetch a list of documents.
+
+```tsx
+const prefetchList = useFrappePrefetchDocList(doctype, args)
+await prefetchList()
+```
+
+#### `useFrappePrefetchCall`
+
+Prefetch API call data.
+
+```tsx
+const prefetchCall = useFrappePrefetchCall(method, params)
+await prefetchCall()
+```
+
+#### `useGetCount`
+
+Get document count with filters.
+
+```tsx
+const { data: count } = useGetCount(doctype, filters)
+```
+
+#### `useValidateLink`
+
+Validate document links.
 
 ```tsx
 const { data } = useValidateLink(doctype, docname, fields)
 ```
 
-## TypeScript Support
+## 💡 Usage Examples
+
+### Basic Document Operations
+
+```tsx
+import { useFrappeGetDoc, useFrappeCreateDoc, useFrappeUpdateDoc } from 'frappe-react-query'
+
+// Fetch a document
+function UserProfile({ userId }) {
+  const { data: user, isLoading, error } = useFrappeGetDoc('User', userId)
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+
+  return (
+    <div>
+      <h1>{user.full_name}</h1>
+      <p>Email: {user.email}</p>
+    </div>
+  )
+}
+
+// Create a document
+function CreateTodo() {
+  const { createDoc, loading, error } = useFrappeCreateDoc()
+  const [description, setDescription] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    await createDoc('ToDo', { description, status: 'Open' })
+    setDescription('')
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="What needs to be done?"
+      />
+      <button type="submit" disabled={loading}>
+        {loading ? 'Creating...' : 'Create Todo'}
+      </button>
+      {error && <div>Error: {error.message}</div>}
+    </form>
+  )
+}
+```
+
+### Real-time Updates
+
+```tsx
+import { useFrappeDocumentEventListener, useFrappeGetDoc } from 'frappe-react-query'
+
+function LiveDocument({ doctype, docname }) {
+  const { data, isLoading } = useFrappeGetDoc(doctype, docname)
+  
+  // Listen for real-time updates
+  useFrappeDocumentEventListener(doctype, docname, (updateData) => {
+    console.log('Document updated:', updateData)
+    // The document will automatically refetch due to React Query cache invalidation
+  })
+
+  if (isLoading) return <div>Loading...</div>
+
+  return (
+    <div>
+      <h2>{data.subject}</h2>
+      <p>{data.description}</p>
+    </div>
+  )
+}
+```
+
+### Search with Debouncing
+
+```tsx
+import { useSearch } from 'frappe-react-query'
+
+function UserSearch() {
+  const [searchText, setSearchText] = useState('')
+  const { data, isLoading } = useSearch(
+    'User',
+    searchText,
+    [['enabled', '=', 1]], // Additional filters
+    10, // Limit
+    300 // Debounce 300ms
+  )
+
+  return (
+    <div>
+      <input
+        type="search"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        placeholder="Search users..."
+      />
+      
+      {isLoading ? (
+        <div>Searching...</div>
+      ) : (
+        <ul>
+          {data?.map((result) => (
+            <li key={result.value}>{result.label}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+```
+
+### File Upload with Progress
+
+```tsx
+import { useFrappeFileUpload } from 'frappe-react-query'
+
+function FileUploader() {
+  const { upload, progress, loading, error } = useFrappeFileUpload()
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    try {
+      const response = await upload(file, {
+        doctype: 'User',
+        docname: 'current_user@example.com',
+        fieldname: 'user_image',
+        folder: 'Home/User Images',
+        is_private: 0,
+      })
+      console.log('File uploaded:', response.file_url)
+    } catch (err) {
+      console.error('Upload failed:', err)
+    }
+  }
+
+  return (
+    <div>
+      <input
+        type="file"
+        onChange={handleFileChange}
+        disabled={loading}
+      />
+      
+      {loading && (
+        <div>
+          Upload Progress: {progress}%
+          <div className="progress-bar" style={{ width: `${progress}%` }} />
+        </div>
+      )}
+      
+      {error && <div>Error: {error.message}</div>}
+    </div>
+  )
+}
+```
+
+## 🔧 Configuration
+
+### FrappeProvider Options
+
+```tsx
+<FrappeProvider
+  url="https://your-frappe-site.com"
+  enableSocket={true}
+  socketOptions={{
+    transports: ['websocket'],
+    autoConnect: true
+  }}
+  queryClient={customQueryClient} // Optional custom React Query client
+>
+  <YourApp />
+</FrappeProvider>
+```
+
+## 🎯 TypeScript Support
 
 The package is written in TypeScript and provides full type support. You can extend the base types for your custom doctypes:
 
 ```tsx
 interface CustomDoc {
-    name: string
-    custom_field: string
+  name: string
+  custom_field: string
+  created_by: string
+  creation: string
+  modified_by: string
+  modified: string
 }
 
 const { data } = useFrappeGetDoc<CustomDoc>('Custom_Doctype', 'DOC-001')
 ```
 
-## Best Practices
+## 🚀 Best Practices
 
-1. **Error Handling**: Always handle error states in your components:
+### 1. Error Handling
+
+Always handle error states in your components:
 
 ```tsx
 if (error) {
-    return <ErrorComponent message={error.message} />
+  return <ErrorComponent message={error.message} />
 }
 ```
 
-2. **Loading States**: Show loading indicators:
+### 2. Loading States
+
+Show loading indicators for better UX:
 
 ```tsx
 if (isLoading) {
-    return <LoadingSpinner />
+  return <LoadingSpinner />
 }
 ```
 
-3. **Type Safety**: Utilize TypeScript interfaces for your doctypes:
+### 3. Type Safety
+
+Utilize TypeScript interfaces for your doctypes:
 
 ```tsx
 interface User {
-    name: string
-    email: string
-    roles: string[]
+  name: string
+  email: string
+  full_name: string
+  roles: string[]
 }
 
 const { data: user } = useFrappeGetDoc<User>('User', 'john@example.com')
 ```
 
-4. **Optimistic Updates**: Use React Query's optimistic update features:
+### 4. Optimistic Updates
+
+Use React Query's optimistic update features:
 
 ```tsx
 const queryClient = useQueryClient()
 queryClient.setQueryData(['user', id], updatedData)
 ```
 
-## Contributing
+### 5. Real-time Updates
+
+Enable socket connections for live data:
+
+```tsx
+<FrappeProvider enableSocket={true}>
+  <YourApp />
+</FrappeProvider>
+```
+
+## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## License
+### Development Setup
 
-MIT © [Mussnad](https://github.com/mussnad)
+```bash
+# Clone the repository
+git clone https://github.com/dhiashalabi/frappe-react-query.git
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build the package
+npm run build
+```
+
+## 📄 License
+
+MIT © [DHia A. SHalabi](https://github.com/dhiashalabi)
+
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/dhiashalabi/frappe-react-query)
+- [NPM Package](https://www.npmjs.com/package/frappe-react-query)
+- [Issues](https://github.com/dhiashalabi/frappe-react-query/issues)
+- [Frappe Framework](https://frappeframework.com/)
