@@ -1,3 +1,22 @@
+# frappe-react-query
+
+## Unreleased
+
+- Target `frappe-js-client` ^3.4.0. Timezone date helpers and request-option validation stay on the client; infinite lists already honor `hasNextPage`.
+- Export mutation variable types (`CreateDocVariables`, `UpdateDocVariables`, …) from the public entries.
+- Rebuild the playground around cookie auth and the ToDo DocType.
+
+## 2.0.0
+
+Rewrite over `frappe-js-client` ^3.3.0. The package now owns query keys, `queryOptions`, cache invalidation, and thin hooks. HTTP and sockets stay in the client; your app owns the `QueryClient`.
+
+### Features
+
+- Cover every `frappe-js-client` 3.3.0 resource method except `db.paginate` (use `useFrappeGetDocListInfinite`) and imperative client helpers (`middleware`, `withAuth`, realtime `connect`/`close`).
+- Add `useFrappeValidateLinkAndFetch` (Frappe 16+), `useFrappeGetQueuedReport`, and `frappeQueryOptions.auth.ping`.
+- Infer DocTypes from `Register.docs` / a typed `FrappeClient<Docs>` on document queries.
+- Prefix-invalidate document caches so `getDoc` queries with `args` stay in sync; forward infinite-query options; invalidate workflow, assignment, tag, file-upload, login-permission, and queued-report keys.
+
 ## [1.6.1](https://github.com/dhiashalabi/frappe-react-query/compare/v1.6.0...v1.6.1) (2025-06-20)
 
 ### Bug Fixes

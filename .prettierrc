@@ -7,10 +7,12 @@
     "arrowParens": "always",
     "semi": false,
     "bracketSpacing": true,
-    "jsxBracketSameLine": false,
+    "bracketSameLine": false,
     "jsxSingleQuote": false,
     "quoteProps": "as-needed",
     "embeddedLanguageFormatting": "auto",
     "singleAttributePerLine": true,
-    "endOfLine": "auto"
+    "endOfLine": "auto",
+    "plugins": ["prettier-plugin-tailwindcss"],
+    "tailwindStylesheet": "./playground/index.css"
 }

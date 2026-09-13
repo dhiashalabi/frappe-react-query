@@ -21,22 +21,26 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Setup Node.js ⚙️
-              uses: actions/setup-node@v4
+            - name: Setup pnpm and Node.js
+              uses: pnpm/setup@v1
               with:
-                  node-version: 20
+                  runtime: node@20
+                  cache: true
+                  install: false
 
             - name: Check lockfile integrity
-              run: git diff --exit-code yarn.lock
+              run: git diff --exit-code pnpm-lock.yaml
 
             - name: Install dependencies 📥
-              run: yarn install --frozen-lockfile
+              run: pnpm install --frozen-lockfile
+              env:
+                  HUSKY: '0'
 
             - name: Build package 🔨
-              run: yarn run build
+              run: pnpm run build
 
             - name: Audit dependencies 🔍
-              run: yarn audit --level high || true
+              run: pnpm audit --audit-level high || true
 
             - name: Run Semantic Release 🚀
               env:

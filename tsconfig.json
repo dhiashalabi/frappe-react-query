@@ -5,21 +5,20 @@
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "allowJs": false,
         "skipLibCheck": true,
-        "esModuleInterop": false,
-        "declaration": true,
+        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "module": "ESNext",
-        "moduleResolution": "Node",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
         "sourceMap": true
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "**/__tests__/*"],
+    "include": ["src", "tests"],
+    "exclude": ["node_modules", "playground", "dist"],
     "references": [
         {
             "path": "./tsconfig.node.json"

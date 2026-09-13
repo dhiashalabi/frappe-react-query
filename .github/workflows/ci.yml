@@ -13,20 +13,26 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Setup Node.js ⚙️
-              uses: actions/setup-node@v4
+            - name: Setup pnpm and Node.js
+              uses: pnpm/setup@v1
               with:
-                  node-version: '20'
-                  cache: 'yarn'
+                  runtime: node@20
+                  cache: true
+                  install: false
 
             - name: Install dependencies 📥
-              run: yarn install --frozen-lockfile
+              run: pnpm install --frozen-lockfile
+              env:
+                  HUSKY: '0'
+
+            - name: Check formatting
+              run: pnpm exec prettier --check .
 
             - name: Run linting 🔍
-              run: yarn lint
+              run: pnpm lint
 
             - name: Run tests 🧪
-              run: yarn test
+              run: pnpm test
 
             - name: Build package 🔨
-              run: yarn build
+              run: pnpm build

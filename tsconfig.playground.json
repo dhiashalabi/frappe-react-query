@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "@/*": ["./playground/*"],
+            "frappe-react-query": ["./src/index.ts"],
+            "frappe-react-query/extended": ["./src/extended.ts"],
+            "frappe-react-query/realtime": ["./src/realtime.ts"]
+        }
+    },
+    "include": ["playground"],
+    "exclude": ["node_modules", "dist"]
+}
